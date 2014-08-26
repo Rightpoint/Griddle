@@ -1,10 +1,9 @@
 The RaizLibraryPlugin for Gradle
 ================================
 
-## Enables easy swapping between remote and local dependencies within a build.gradle file by determining which is actually intended to be used in a project.
+## Enables easy swapping between remote and local dependencies within a build.gradle file by determining which is actually intended to be used in a project. It will scan the top-level **settings.gradle** for projects included in the build. This way we include submodules in a project is by adding one line in the file, or by choosing the remote version by removing that line. 
 
 ## Usage
-
 
 ### Including in your project
 

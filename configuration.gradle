@@ -1,0 +1,5 @@
+task configRelease << {
+    def artifactoryConfiguration ="${artifactory_user}" == "teamcity" ? artifactoryConfigurationTeamCity : artifactoryConfigurationLocal
+    apply from: artifactoryConfiguration
+    println("*** Compiling: ${group}:${project.name}:${version}@aar with config: ${artifactoryConfiguration} ***")
+}

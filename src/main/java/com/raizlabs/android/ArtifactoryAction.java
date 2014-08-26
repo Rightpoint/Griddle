@@ -1,4 +1,4 @@
-package main.com.raizlabs.android;
+package com.raizlabs.android;
 
 import org.gradle.api.Action;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;

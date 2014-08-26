@@ -1,25 +1,30 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'http://dl.bintray.com/jfrog/jfrog-jars' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.0.9')
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'artifactory'
+
+apply from: 'configuration.gradle'
 
 dependencies {
     compile gradleApi()
 }
 
 sourceCompatibility = 1.6
-version = '1.0'
 
 jar.baseName = 'raiz-library-plugin'
 
 repositories {
     mavenCentral()
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-    }
 }
 
 task sourcesJar(type: Jar) {

@@ -1,0 +1,28 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+dependencies {
+    compile gradleApi()
+}
+
+sourceCompatibility = 1.6
+version = '1.0'
+
+jar.baseName = 'raiz-library-plugin'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}

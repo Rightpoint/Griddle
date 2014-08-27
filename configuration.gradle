@@ -1,5 +1,26 @@
 task configRelease << {
-    def artifactoryConfiguration ="${artifactory_user}" == "teamcity" ? artifactoryConfigurationTeamCity : artifactoryConfigurationLocal
-    apply from: artifactoryConfiguration
-    println("*** Compiling: ${group}:${project.name}:${version}@aar with config: ${artifactoryConfiguration} ***")
+    artifactory {
+        contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+        publish {
+            repository {
+                contextUrl = "${artifactory_contextUrl}"
+                repoKey = 'android-dev'
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+                maven = true
+
+            }
+        }
+        resolve {
+            repository {
+                contextUrl = "${artifactory_contextUrl}"
+                repoKey = 'android-dev-distributions'
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+                maven = true
+
+            }
+        }
+    }
+    println("*** Compiling: ${group}:${project.name}:${version}@aar  ***")
 }

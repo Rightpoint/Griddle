@@ -94,7 +94,7 @@ public class RaizDependencyCompiler {
     }
 
     /**
-     * This will use the default "compile" and "@aar" mechanisms for getting dependencies.
+     * This will use the default "compile" mechanisms for getting dependencies.
      *
      * @param module       the name of the module, does not have to be fully qualified as we will assume all libs are in "Libraries"
      * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
@@ -102,7 +102,7 @@ public class RaizDependencyCompiler {
      */
     public void raizCompile(String module, String artifactName) {
         String fullyQualifiedName = ":Libraries:" + module;
-        raizCompile("compile", fullyQualifiedName, artifactName.concat("@aar"));
+        raizCompile("compile", fullyQualifiedName, artifactName);
     }
 
     /**

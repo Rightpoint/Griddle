@@ -25,9 +25,22 @@ public class RaizLibraryPlugin implements Plugin<Project> {
 
     public static final String ARTIFACTORY_PASSWORD = "artifactory_password";
 
+    public static final String JFROG_VERSION = "2.0.9";
+
+    public static final String JFROG_URL = "http://dl.bintray.com/jfrog/jfrog-jars";
+
+    public static final String GRADLE_TOOLS_VERSION = "0.12.+";
+
     @Override
     public void apply(Project project) {
+
+        String contextUrl = (String) project.property(ARTIFACTORY_CONTEXT_URL);
+        String user = (String) project.property(ARTIFACTORY_USER);
+        String pass = (String) project.property(ARTIFACTORY_PASSWORD);
+
+        // Add our methods to the plugins
         project.getConvention().getPlugins().put("RaizCompiler", new RaizDependencyCompiler(project));
+        project.getRepositories().mavenCentral();
 
         // this is for artifactory and releasing builds
         Task releaseTask = project.getTasks().findByPath("assembleRelease");
@@ -39,9 +52,6 @@ public class RaizLibraryPlugin implements Plugin<Project> {
             project.getPlugins().apply(ARTIFACTORY);
             project.setGroup(GROUP);
 
-            String contextUrl = (String) project.property(ARTIFACTORY_CONTEXT_URL);
-            String user = (String) project.property(ARTIFACTORY_USER);
-            String pass = (String) project.property(ARTIFACTORY_PASSWORD);
 
             project.getRepositories().maven(new ArtifactoryAction(contextUrl + ARTIFACTORY_REPO_ENDPOINT, user, pass));
         } else {

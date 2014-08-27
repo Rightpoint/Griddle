@@ -4,6 +4,9 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.net.URI;
+import java.util.HashMap;
+
 /**
  * Author: andrewgrosner
  * Contributors: { }
@@ -34,6 +37,10 @@ public class RaizLibraryPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
 
+        HashMap<String, URI> map = new HashMap<String, URI>();
+        map.put("from", project.uri("configuration.gradle"));
+        project.apply(map);
+
         String contextUrl = (String) project.property(ARTIFACTORY_CONTEXT_URL);
         String user = (String) project.property(ARTIFACTORY_USER);
         String pass = (String) project.property(ARTIFACTORY_PASSWORD);
@@ -45,6 +52,8 @@ public class RaizLibraryPlugin implements Plugin<Project> {
         // this is for artifactory and releasing builds
         Task releaseTask = project.getTasks().findByPath("assembleRelease");
         if(releaseTask!=null) {
+            project.getConvention().getPlugins().put("RaizBuildIncrementer", new RaizBuildIncrementer(project));
+
             // adds the configRelease task we want here
             releaseTask.dependsOn("configRelease");
 

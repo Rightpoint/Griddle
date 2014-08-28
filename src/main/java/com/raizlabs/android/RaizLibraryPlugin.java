@@ -1,11 +1,12 @@
 package com.raizlabs.android;
 
+import com.raizlabs.android.dsl.ArtifactoryDsl;
+import com.raizlabs.android.dsl.RepositoryContainerDsl;
+import com.raizlabs.android.dsl.RepositoryDsl;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-
-import java.net.URI;
-import java.util.HashMap;
+import org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension;
 
 /**
  * Author: andrewgrosner
@@ -37,10 +38,7 @@ public class RaizLibraryPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
 
-        HashMap<String, URI> map = new HashMap<String, URI>();
-        map.put("from", project.uri("configuration.gradle"));
-        project.apply(map);
-
+        // Retrieve global properties
         String contextUrl = (String) project.property(ARTIFACTORY_CONTEXT_URL);
         String user = (String) project.property(ARTIFACTORY_USER);
         String pass = (String) project.property(ARTIFACTORY_PASSWORD);
@@ -54,15 +52,21 @@ public class RaizLibraryPlugin implements Plugin<Project> {
         if(releaseTask!=null) {
             project.getConvention().getPlugins().put("RaizBuildIncrementer", new RaizBuildIncrementer(project));
 
-            // adds the configRelease task we want here
-            releaseTask.dependsOn("configRelease");
-
+            // Set up plugins so we never need to add them to a build.gradle
             project.getPlugins().apply(MAVEN);
             project.getPlugins().apply(ARTIFACTORY);
             project.setGroup(GROUP);
 
-
+            // Add Artifactory repo to the repositories
             project.getRepositories().maven(new ArtifactoryAction(contextUrl + ARTIFACTORY_REPO_ENDPOINT, user, pass));
+
+            // Handle the artifactory dsl, works like magic! not sure how...
+            RepositoryContainerDsl publish = new RepositoryContainerDsl(new RepositoryDsl("android-dev", user, pass));
+            RepositoryContainerDsl resolve = new RepositoryContainerDsl(new RepositoryDsl("android-dev-distributions", user, pass));
+
+            DefaultExtraPropertiesExtension ext = (((DefaultExtraPropertiesExtension) project.property("ext")));
+            ext.setProperty("artifactory", new ArtifactoryDsl(contextUrl, publish, resolve));
+
         } else {
             System.out.println("Skipping dependency resolver as this is a debug build");
         }

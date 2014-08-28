@@ -17,13 +17,11 @@ public class RaizBuildIncrementer {
 
     public static final String PROP_VERSION = "version";
 
+    public static final String PROP_BUILD_NAME = "buildName";
+
     public RaizBuildIncrementer(Project project) {
 
-
         File gradleProperties = project.file("gradle.properties");
-
-        // If exists, we will increment version number
-        if (gradleProperties.exists()) {
 
             try {
                 Scanner scanner = new Scanner(gradleProperties);
@@ -73,29 +71,5 @@ public class RaizBuildIncrementer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            // Does not exist, we will generate the file for you!
-            String buildName = project.getProjectDir().getName();
-            BufferedWriter writer = null;
-            try {
-                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(gradleProperties)));
-                writer.write("version = 1.0.0");
-                writer.write("buildName = " + buildName);
-                writer.newLine();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                System.out.println("Writing gradle.properties FAILED");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 }

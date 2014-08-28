@@ -27,7 +27,7 @@ public class ArtifactoryDsl {
         this.contextUrl = contextUrl;
     }
 
-    public RepositoryDsl getPublish() {
+    public RepositoryContainerDsl getPublish() {
         return publish;
     }
 
@@ -35,7 +35,7 @@ public class ArtifactoryDsl {
         this.publish = publish;
     }
 
-    public RepositoryDsl getResolve() {
+    public RepositoryContainerDsl getResolve() {
         return resolve;
     }
 

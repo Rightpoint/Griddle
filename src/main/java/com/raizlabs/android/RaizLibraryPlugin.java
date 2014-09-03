@@ -61,9 +61,10 @@ public class RaizLibraryPlugin implements Plugin<Project> {
             project.getRepositories().maven(new ArtifactoryAction(contextUrl + ARTIFACTORY_REPO_ENDPOINT, user, pass));
 
             // Handle the artifactory dsl, works like magic! not sure how...
-            RepositoryContainerDsl publish = new RepositoryContainerDsl(new RepositoryDsl("android-dev", user, pass, contextUrl));
-            RepositoryContainerDsl resolve = new RepositoryContainerDsl(new RepositoryDsl("android-dev-distributions", user, pass, contextUrl));
+            RepositoryContainerDsl publish = new RepositoryContainerDsl(new RepositoryDsl("android-dev", user, pass));
+            RepositoryContainerDsl resolve = new RepositoryContainerDsl(new RepositoryDsl("android-dev-distributions", user, pass));
 
+            System.out.println("Context url: " + contextUrl);
             DefaultExtraPropertiesExtension ext = (((DefaultExtraPropertiesExtension) project.property("ext")));
             ext.setProperty("artifactory", new ArtifactoryDsl(contextUrl, publish, resolve));
 

@@ -13,15 +13,12 @@ public class RepositoryDsl {
 
     private String password;
 
-    private String contextUrl;
-
     private boolean maven = true;
 
-    public RepositoryDsl(String repoKey, String username, String password, String contextUrl) {
+    public RepositoryDsl(String repoKey, String username, String password) {
         this.repoKey = repoKey;
         this.username = username;
         this.password = password;
-        this.contextUrl = contextUrl;
     }
 
     public String getRepoKey() {
@@ -32,23 +29,19 @@ public class RepositoryDsl {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
 
-    public boolean maven(){
+    public boolean maven() {
         return maven;
     }
 
     public void setMaven(boolean maven) {
         this.maven = maven;
-    }
-
-    public String getContextUrl() {
-        return contextUrl;
-    }
-
-    public void setContextUrl(String contextUrl) {
-        this.contextUrl = contextUrl;
     }
 }

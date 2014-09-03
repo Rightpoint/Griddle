@@ -13,6 +13,10 @@ public class ArtifactoryDsl {
 
     private RepositoryContainerDsl resolve;
 
+    public ArtifactoryDsl(String contextUrl) {
+        this.contextUrl = contextUrl;
+    }
+
     public ArtifactoryDsl(String contextUrl, RepositoryContainerDsl publish, RepositoryContainerDsl resolve) {
         this.contextUrl = contextUrl;
         this.publish = publish;

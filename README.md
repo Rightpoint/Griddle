@@ -35,6 +35,22 @@ apply plugin: 'RaizLibraryPlugin'
 
 ```
 
+2. Your ```~/.gradle/gradle.properties``` file should look like this:
+
+```
+
+artifactory_user={userNameHere}                                # The given artifactory username
+artifactory_contextUrl=http://c3po.rz:8081/artifactory   # The given artifactory URL
+artifactory_password={encryptedPasswordHere}        # The given artifactory encrypted passcode
+org.gradle.daemon=true                                               # Runs gradle continuously, results in much faster build-start times
+org.gradle.parallel=true                                                # Compiles submodules in parallel
+org.gradle.jvmargs=-Xmx1g -XX:MaxPermSize=2g    # Gives gradle a ton of breathing room
+org.gradle.configureondemand=true                           # Only attempts to build subprojects included by the main project
+rlp_default_group=com.raizlabs.android-modules      # The group to resolve dependencies without a specified artifact equivalent
+rlp_default_library_directory=:Libraries                       # The default directory to resolve local submodules in
+rlp_default_library_extension=@aar                           # The default extension on dependencies without a specified artifact equivalent
+
+```
 ### Methods
 
 #### ```dependency()```

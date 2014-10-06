@@ -37,7 +37,7 @@ apply plugin: 'RaizLibraryPlugin'
 
 2. Your ```~/.gradle/gradle.properties``` file should look like this:
 
-```groovy
+```
 
 artifactory_user={userNameHere}                                # The given artifactory username
 artifactory_contextUrl=http://c3po.rz:8081/artifactory   # The given artifactory URL

@@ -131,6 +131,14 @@ public class RaizDependencyCompiler {
     }
 
     /**
+     * Compiles a jar in the default "\libs" directory.
+     * @param jarName The name of the jar file without the extension .jar
+     */
+    public void jarDependency(String jarName) {
+        dependency("compile", jarName, "");
+    }
+
+    /**
      * Uses the default "compile" configuration.
      *
      * @param jarName      the name of the jar file without the extension

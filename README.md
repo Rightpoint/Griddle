@@ -25,6 +25,8 @@ buildscript {
     dependencies {
         ....
         classpath 'com.raizlabs.android-modules:RaizLibraryPlugin:1.x.x'
+
+        // only use when we want to publish a module to artifactory
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:2.2.5"
     }
 

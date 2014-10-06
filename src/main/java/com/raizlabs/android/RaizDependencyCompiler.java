@@ -134,9 +134,9 @@ public class RaizDependencyCompiler {
      * Compiles a list of jars in the default "\libs" directory
      * @param jars The jar names to compile without the .jar prefix
      */
-    public void jarDependencies(String[] jars) {
+    public void dependencyJar(String[] jars) {
         for(String jar: jars) {
-            jarDependency(jar);
+            dependencyJar(jar);
         }
     }
 
@@ -144,7 +144,7 @@ public class RaizDependencyCompiler {
      * Compiles a jar in the default "\libs" directory.
      * @param jarName The name of the jar file without the extension .jar
      */
-    public void jarDependency(String jarName) {
+    public void dependencyJar(String jarName) {
         dependency("compile", jarName, "");
     }
 
@@ -155,7 +155,7 @@ public class RaizDependencyCompiler {
      * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      * @see #dependency(String, String, String)
      */
-    public void jarDependency(String jarName, String artifactName) {
+    public void dependencyJar(String jarName, String artifactName) {
         dependency("compile", jarName, artifactName);
     }
 
@@ -167,7 +167,7 @@ public class RaizDependencyCompiler {
      * @param jarName         the name of the jar file without the extension
      * @param artifactName    the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      */
-    public void jarDependency(String compilationMode, String jarName, String artifactName) {
+    public void dependencyJar(String compilationMode, String jarName, String artifactName) {
         DependencyHandler dependencyHandler = mProject.getDependencies();
 
         String fileName = jarName.concat(".jar");

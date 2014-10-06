@@ -131,6 +131,16 @@ public class RaizDependencyCompiler {
     }
 
     /**
+     * Compiles a list of jars in the default "\libs" directory
+     * @param jars The jar names to compile without the .jar prefix
+     */
+    public void jarDependencies(String[] jars) {
+        for(String jar: jars) {
+            jarDependency(jar);
+        }
+    }
+
+    /**
      * Compiles a jar in the default "\libs" directory.
      * @param jarName The name of the jar file without the extension .jar
      */
@@ -164,7 +174,7 @@ public class RaizDependencyCompiler {
 
         // Local dependency
         if (mLibraries.contains(fileName)) {
-            dependencyHandler.add(compilationMode, mProject.file("libs/" + jarName));
+            dependencyHandler.add(compilationMode, mProject.files("libs/" + jarName));
             System.out.println("Compiling local jar: " + jarName);
         } else {
             // Remote dependency

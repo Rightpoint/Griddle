@@ -57,11 +57,14 @@ public class RaizDependencyCompiler {
             e.printStackTrace();
         }
 
-        File librariesFile = root.file("libs/");
+        File librariesFile = project.file("libs/");
         if (librariesFile != null && librariesFile.isDirectory()) {
+            System.out.println("Found libs directory. Tracing through files");
             File[] libs = librariesFile.listFiles();
             if (libs != null) {
                 for (File file : libs) {
+                    System.out.println("Found: " + file.getName());
+
                     if (file.isFile() && file.getName().endsWith(".jar")) {
                         if(!mLibraries.contains(file.getName())) {
                             System.out.println("*******Found Jar***** : " + file.getName());
@@ -174,7 +177,7 @@ public class RaizDependencyCompiler {
 
         // Local dependency
         if (mLibraries.contains(fileName)) {
-            dependencyHandler.add(compilationMode, mProject.files("libs/" + jarName));
+            dependencyHandler.add(compilationMode, mProject.files("libs/" + fileName));
             System.out.println("Compiling local jar: " + jarName);
         } else {
             // Remote dependency

@@ -85,6 +85,8 @@ dependencies {
     // If not found, it will use maven to locate it
     jarDependency 'project-lombok', 'org.projectlombok:lombok:1.14.4'
 
+   // equivalent as writing compile files('libs/volley.jar'), just provides a much cleaner syntax
+   jarDependency 'volley'
 }
 
 ```

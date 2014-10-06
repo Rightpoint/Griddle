@@ -92,7 +92,7 @@ public class RaizDependencyCompiler {
      * @see #dependency(String, String)
      */
     public void dependency(String module) {
-        String artifactName = String.format("%1s:%1s:%1s%1s", RaizLibraryPlugin.GROUP, module, "+", RaizLibraryPlugin.DEFAULT_LIBRARY_EXTENSION);
+        String artifactName = String.format("%1s:%1s:%1s%1s", RaizLibraryPlugin.GROUP, module, "+", RaizLibraryPlugin.LIBRARY_EXTENSION);
         dependency(module, artifactName);
     }
 
@@ -104,7 +104,7 @@ public class RaizDependencyCompiler {
      * @see #dependency(String, String, String)
      */
     public void dependency(String module, String artifactName) {
-        String fullyQualifiedName = RaizLibraryPlugin.LIBRARY_DIRECTORY + ":" + module;
+        String fullyQualifiedName = ":" + RaizLibraryPlugin.LIBRARY_DIRECTORY + ":" + module;
         dependency("compile", fullyQualifiedName, artifactName);
     }
 

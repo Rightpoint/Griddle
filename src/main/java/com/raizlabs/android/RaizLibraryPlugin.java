@@ -44,7 +44,7 @@ public class RaizLibraryPlugin implements Plugin<Project> {
 
     public static String GROUP;
 
-    public static String LIBRARY_DIRECTORY = ":Libraries";
+    public static String LIBRARY_DIRECTORY = "Libraries";
 
     public static String LIBRARY_EXTENSION = "";
 
@@ -59,6 +59,7 @@ public class RaizLibraryPlugin implements Plugin<Project> {
         // The default group property
         if(project.hasProperty(DEFAULT_GROUP)) {
             GROUP = project.property(DEFAULT_GROUP).toString();
+            System.out.println("Found group: " + GROUP);
         } else {
             throw new IllegalStateException("Project " + project.getName() + " must have a default group specified in" +
                     "a gradle.properties file. The recommended location is in the global ~/.gradle/ directory.");
@@ -66,10 +67,12 @@ public class RaizLibraryPlugin implements Plugin<Project> {
 
         if(project.hasProperty(DEFAULT_LIBRARY)) {
             LIBRARY_DIRECTORY = project.property(DEFAULT_LIBRARY).toString();
+            System.out.println("Found default library: " + LIBRARY_DIRECTORY);
         }
 
         if(project.hasProperty(DEFAULT_LIBRARY_EXTENSION)) {
             LIBRARY_EXTENSION = project.property(DEFAULT_LIBRARY_EXTENSION).toString();
+            System.out.println("Found default library extension: " + LIBRARY_EXTENSION);
         }
 
         // Add our methods to the plugins
@@ -124,7 +127,7 @@ public class RaizLibraryPlugin implements Plugin<Project> {
 
             GradleArtifactoryClientConfigUpdater.update(pluginConvention.getClientConfig(), project.getRootProject());
         } else {
-            System.out.println("Skipping dependency resolver as this is a debug build");
+            System.out.println("Skipping artifactory publishing as publish property is missing. Declare publish=true in your gradle.properties file");
         }
     }
 

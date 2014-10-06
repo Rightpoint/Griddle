@@ -86,7 +86,11 @@ dependencies {
     jarDependency 'project-lombok', 'org.projectlombok:lombok:1.14.4'
 
    // equivalent as writing compile files('libs/volley.jar'), just provides a much cleaner syntax
-   jarDependency 'volley'
+    jarDependency 'volley'
+ 
+    // list of jars instead of writing:
+    // compile files('libs/volley.jar', 'libs/project-lombok.jar', 'libs/android-support-v4.jar')
+    jarDependencies 'volley', 'project-lombok', 'android-support-v4'
 }
 
 ```

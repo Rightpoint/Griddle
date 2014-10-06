@@ -121,12 +121,12 @@ public class RaizDependencyCompiler {
 
         // We found the module locally, compile it locally
         if (mModules.contains(module)) {
-            dependencyHandler.add(compilationMode, mProject.project(module));
             System.out.println("Compiling local project: " + module);
+            dependencyHandler.add(compilationMode, mProject.project(module));
         } else {
             // remote dependency, we will compile it using the params provided
-            dependencyHandler.add(compilationMode, artifactName);
             System.out.println("Compiling remote dependency: " + artifactName);
+            dependencyHandler.add(compilationMode, artifactName);
         }
     }
 
@@ -134,9 +134,9 @@ public class RaizDependencyCompiler {
      * Compiles a list of jars in the default "\libs" directory
      * @param jars The jar names to compile without the .jar prefix
      */
-    public void dependencyJar(String[] jars) {
+    public void jarDependency(String[] jars) {
         for(String jar: jars) {
-            dependencyJar(jar);
+            jarDependency(jar);
         }
     }
 
@@ -144,8 +144,8 @@ public class RaizDependencyCompiler {
      * Compiles a jar in the default "\libs" directory.
      * @param jarName The name of the jar file without the extension .jar
      */
-    public void dependencyJar(String jarName) {
-        dependency("compile", jarName, "");
+    public void jarDependency(String jarName) {
+        jarDependency("compile", jarName, "");
     }
 
     /**
@@ -155,8 +155,8 @@ public class RaizDependencyCompiler {
      * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      * @see #dependency(String, String, String)
      */
-    public void dependencyJar(String jarName, String artifactName) {
-        dependency("compile", jarName, artifactName);
+    public void jarDependency(String jarName, String artifactName) {
+        jarDependency("compile", jarName, artifactName);
     }
 
     /**
@@ -167,7 +167,7 @@ public class RaizDependencyCompiler {
      * @param jarName         the name of the jar file without the extension
      * @param artifactName    the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      */
-    public void dependencyJar(String compilationMode, String jarName, String artifactName) {
+    public void jarDependency(String compilationMode, String jarName, String artifactName) {
         DependencyHandler dependencyHandler = mProject.getDependencies();
 
         String fileName = jarName.concat(".jar");

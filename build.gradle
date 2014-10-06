@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'com.jfrog.artifactory' version '2.2.5'
+}
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+apply from: 'configuration.gradle'
+
+
+
+version = "1.0.2"
+group = "com.raizlabs.android-modules"
+
+dependencies {
+    compile gradleApi()
+    compile "org.jfrog.buildinfo:build-info-extractor-gradle:2.2.4"
+}
+
+sourceCompatibility = 1.6
+
+jar.baseName = 'RaizLibraryPlugin'
+
+repositories {
+    mavenCentral()
+    maven { url 'http://dl.bintray.com/jfrog/jfrog-jars' }
+    maven {
+        url "${artifactory_contextUrl}/android-dev"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+}
+
+artifactoryPublish {
+    dependsOn clean, configRelease, jar
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}

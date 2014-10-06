@@ -24,7 +24,7 @@ public class RaizLibraryPlugin implements Plugin<Project> {
 
     public static final String DEFAULT_LIBRARY = "rlp_default_library_directory";
 
-    public static final String DEFAULT_LIBRARY_EXTENSION = "rlp+default_library_extension";
+    public static final String DEFAULT_LIBRARY_EXTENSION = "rlp_default_library_extension";
 
     public static final String ARTIFACTORY_CONTEXT_URL = "artifactory_contextUrl";
 

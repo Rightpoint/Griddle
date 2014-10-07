@@ -7,7 +7,7 @@ The RaizLibraryPlugin for Gradle
 
 ### Including in your project
 
-  1. Add the following block to your ```buildscript.repositories{}``` block in the project-level **build.gradle**
+  1. Add the following block to your ```buildscript.repositories{}``` block in the project-level **build.gradle** (for now)
 
 ```groovy
 
@@ -24,30 +24,19 @@ buildscript {
     }
     dependencies {
         ....
-        classpath 'com.raizlabs.android-modules:RaizLibraryPlugin:1.x.x'
-
-        // only use when we want to publish a module to artifactory
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:2.2.5"
+        classpath 'com.raizlabs.android-modules:libraryplugin:1.x.x'
     }
 
 }
 
 // this should come after 'com.android.library' or 'com.android.application
-apply plugin: 'RaizLibraryPlugin'
+apply plugin: 'com.raizlabs.libraryplugin'
 
 ```
 
-  2. Your ```~/.gradle/gradle.properties``` file should look like this:
+  2. Add these variables to your ```~/.gradle/gradle.properties``` file:
 
 ```
-
-artifactory_user={userNameHere}                                # The given artifactory username
-artifactory_contextUrl=http://c3po.rz:8081/artifactory   # The given artifactory URL
-artifactory_password={encryptedPasswordHere}        # The given artifactory encrypted passcode
-org.gradle.daemon=true                                               # Runs gradle continuously, results in much faster build-start times
-org.gradle.parallel=true                                                # Compiles submodules in parallel
-org.gradle.jvmargs=-Xmx1g -XX:MaxPermSize=2g    # Gives gradle a ton of breathing room
-org.gradle.configureondemand=true                           # Only attempts to build subprojects included by the main project
 rlp_default_group=com.raizlabs.android-modules      # The group to resolve dependencies without a specified artifact equivalent
 rlp_default_library_directory=Libraries                       # The default directory to resolve local submodules in (optional, default "Libraries"
 rlp_default_library_extension=@aar                           # The default extension on dependencies without a specified artifact equivalent

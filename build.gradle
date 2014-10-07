@@ -13,9 +13,7 @@ apply plugin: 'maven-publish'
 
 apply from: 'configuration.gradle'
 
-
-
-version = "1.0.9"
+version = "1.0.10"
 group = "com.raizlabs.android-modules"
 
 dependencies {
@@ -25,7 +23,7 @@ dependencies {
 
 sourceCompatibility = 1.6
 
-jar.baseName = 'RaizLibraryPlugin'
+jar.baseName = 'libraryplugin'
 
 repositories {
     mavenCentral()

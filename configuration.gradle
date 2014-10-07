@@ -22,5 +22,5 @@ task configRelease << {
             }
         }
     }
-    println("*** Compiling: ${group}:${project.name}:${version}@aar  ***")
+    println("*** Compiling: ${group}:${rootProject.name}:${rootProject.version}@aar  ***")
 }

@@ -7,7 +7,7 @@ The RaizLibraryPlugin for Gradle
 
 ### Including in your project
 
-1. Add the following block to your ```buildscript.repositories{}``` block in the project-level **build.gradle**
+  1. Add the following block to your ```buildscript.repositories{}``` block in the project-level **build.gradle**
 
 ```groovy
 
@@ -25,6 +25,8 @@ buildscript {
     dependencies {
         ....
         classpath 'com.raizlabs.android-modules:RaizLibraryPlugin:1.x.x'
+
+        // only use when we want to publish a module to artifactory
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:2.2.5"
     }
 
@@ -35,7 +37,7 @@ apply plugin: 'RaizLibraryPlugin'
 
 ```
 
-2. Your ```~/.gradle/gradle.properties``` file should look like this:
+  2. Your ```~/.gradle/gradle.properties``` file should look like this:
 
 ```
 
@@ -47,7 +49,7 @@ org.gradle.parallel=true                                                # Compil
 org.gradle.jvmargs=-Xmx1g -XX:MaxPermSize=2g    # Gives gradle a ton of breathing room
 org.gradle.configureondemand=true                           # Only attempts to build subprojects included by the main project
 rlp_default_group=com.raizlabs.android-modules      # The group to resolve dependencies without a specified artifact equivalent
-rlp_default_library_directory=:Libraries                       # The default directory to resolve local submodules in
+rlp_default_library_directory=Libraries                       # The default directory to resolve local submodules in (optional, default "Libraries"
 rlp_default_library_extension=@aar                           # The default extension on dependencies without a specified artifact equivalent
 
 ```
@@ -85,6 +87,12 @@ dependencies {
     // If not found, it will use maven to locate it
     jarDependency 'project-lombok', 'org.projectlombok:lombok:1.14.4'
 
+   // equivalent as writing compile files('libs/volley.jar'), just provides a much cleaner syntax
+    jarDependency 'volley'
+ 
+    // list of jars instead of writing:
+    // compile files('libs/volley.jar', 'libs/project-lombok.jar', 'libs/android-support-v4.jar')
+    jarDependencies 'volley', 'project-lombok', 'android-support-v4'
 }
 
 ```

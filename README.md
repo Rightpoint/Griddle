@@ -37,11 +37,14 @@ apply plugin: 'com.raizlabs.libraryplugin'
   2. Add these variables to your ```~/.gradle/gradle.properties``` file:
 
 ```
-rlp_default_group=com.raizlabs.android-modules      # The group to resolve dependencies without a specified artifact equivalent
-rlp_default_library_directory=Libraries                       # The default directory to resolve local submodules in (optional, default "Libraries"
-rlp_default_library_extension=@aar                           # The default extension on dependencies without a specified artifact equivalent
+
+rlp_default_group=                                                      # The group to resolve dependencies without a specified artifact equivalent
+rlp_default_library_directory=                                      # The default directory to resolve local submodules in (optional, default is "Libraries"
+rlp_default_library_extension=                                    # The default extension on dependencies without a specified artifact equivalent (optional, default is the empty string)
 
 ```
+
+3
 ### Methods
 
 #### ```dependency()```

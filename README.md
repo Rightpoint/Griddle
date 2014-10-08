@@ -7,7 +7,9 @@ The RaizLibraryPlugin for Gradle
 
 ### Including in your project
 
-  1. Add the following block to your ```buildscript.repositories{}``` block in the project-level **build.gradle** (for now)
+#### Old Artifactory Way
+
+Add the following block to your ```buildscript.repositories{}``` block in the project-level **build.gradle** (for now until open source) 
 
 ```groovy
 
@@ -34,7 +36,19 @@ apply plugin: 'com.raizlabs.libraryplugin'
 
 ```
 
-  2. Add these variables to your ```~/.gradle/gradle.properties``` file (or in project-level gradle.properties file):
+#### Gradle Plugin Way
+
+After your ```buildscript{}``` and before applying other plugins: 
+
+```
+plugins {
+  id "com.raizlabs.libraryplugin"
+}
+```
+
+#### Adding Properties
+
+Add these variables to your ```~/.gradle/gradle.properties``` file (or in project-level gradle.properties file):
 
 ```
 

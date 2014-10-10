@@ -77,6 +77,24 @@ public class RaizDependencyCompiler {
     }
 
     /**
+     * Returns the artifact name combination based on user preferences
+     * @param module
+     * @return
+     */
+    private static String getArtifactName(String module) {
+        return String.format("%1s:%1s:%1s%1s", RaizLibraryPlugin.GROUP, module, "+", RaizLibraryPlugin.LIBRARY_EXTENSION);
+    }
+
+    /**
+     * Returns the fully qualified local module name for the specified partial module.
+     * @param module
+     * @return
+     */
+    private static String getFullyQualifiedName(String module) {
+        return ":" + RaizLibraryPlugin.LIBRARY_DIRECTORY + ":" + module;
+    }
+
+    /**
      * This will compile a whole listing of modules separated by a comma and surrounded by [].
      *
      * @param modules the list of modules we wish to apply compile to
@@ -95,8 +113,7 @@ public class RaizDependencyCompiler {
      * @see #dependency(String, String)
      */
     public void dependency(String module) {
-        String artifactName = String.format("%1s:%1s:%1s%1s", RaizLibraryPlugin.GROUP, module, "+", RaizLibraryPlugin.LIBRARY_EXTENSION);
-        dependency(module, artifactName);
+        dependency(module, getArtifactName(module));
     }
 
     /**
@@ -107,8 +124,7 @@ public class RaizDependencyCompiler {
      * @see #dependency(String, String, String)
      */
     public void dependency(String module, String artifactName) {
-        String fullyQualifiedName = ":" + RaizLibraryPlugin.LIBRARY_DIRECTORY + ":" + module;
-        dependency("compile", fullyQualifiedName, artifactName);
+        dependency("compile", getFullyQualifiedName(module), artifactName);
     }
 
     /**
@@ -131,6 +147,36 @@ public class RaizDependencyCompiler {
             System.out.println("Compiling remote dependency: " + artifactName);
             dependencyHandler.add(compilationMode, artifactName);
         }
+    }
+
+    /**
+     * This will runtime a whole listing of modules separated by a comma and surrounded by [].
+     *
+     * @param modules the list of modules we wish to apply compile to
+     * @see #dependency(String)
+     */
+    public void rtDependencies(String[] modules) {
+        for(String module: modules) {
+            rtDependency(module);
+        }
+    }
+
+    /**
+     * This will always use the latest, non-snapshot version of the module specified
+     * @param module
+     */
+    public void rtDependency(String module) {
+        rtDependency(module, getArtifactName(module));
+    }
+
+    /**
+     * This function will runtime a module locally if the inclusion exists within the settings.gradle. If not,
+     * it will use the args provided for a remote compile lookup
+     *  @param module       the name of the module, does not have to be fully qualified as we will assume all libs are in "Libraries"
+     * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
+     */
+    public void rtDependency(String module, String artifactName) {
+        dependency("runtime", getFullyQualifiedName(module), artifactName);
     }
 
     /**

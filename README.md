@@ -51,6 +51,12 @@ rlp_default_library_extension=@aar         # The default extension on dependenci
 ```
 Add these variables to your global ```~/.gradle/gradle.properties``` file, or in project-level gradle.properties file. 
 
+## Methods
+
+  1. dependency()
+  2. jarDependency()
+  3. rtDependency()
+
 ### ```dependency()```
 
 This is the main method for determining whether to use the local or remote version of a repository. It supports one, two or three parameters.
@@ -114,3 +120,7 @@ dependencies {
 }
 
 ```
+
+#### ```rtDependency()```
+
+Works as ```dependency()``` works except it uses the "runtime" keyword.

@@ -1,28 +1,22 @@
 The RaizLibraryPlugin for Gradle
 ================================
 
-## Enables easy swapping between remote and local dependencies within a build.gradle file by determining which is actually intended to be used in a project. It will scan the top-level **settings.gradle** for projects included locally in the build. It it as easy as taking out the ```include: ":Libraries:Submodule"``` in the settings.gradle to reference the remote version of the submodule.
+Do you ever run into a scenario where you have multiple subprojects, and they point to both a local and remote version of the library your'e building? Or a subproject references a local version that does not exist, however exists in maven/ivy? Instead of having to modify the ```build.gradle``` file at all and having to worry about if the dependencies are local or remote, this plugin handles that determination by scanning the project's ```settings.gradle``` file and uses the inclusions there to determine whether to use local vs remote. 
+
+**Note:**  instead of simply looking for the subproject existing in the default subproject directory, we use the ```settings.gradle``` to allow code to exist in parallel without affecting the build process.
 
 ## Usage
 
 ### Including in your project
 
-#### Old Artifactory Way
-
+#### Pre-Gradle 2.0
 Add the following block to your ```buildscript.repositories{}``` block in the project-level **build.gradle** (for now until open source) 
 
 ```groovy
 
 buildscript {
     repositories {
-        ....
-        maven {
-            url "${artifactory_contextUrl}/android-dev"
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }
+        mavenCentral()
     }
     dependencies {
         ....
@@ -36,7 +30,7 @@ apply plugin: 'com.raizlabs.libraryplugin'
 
 ```
 
-#### Gradle Plugin Way
+#### Gradle 2.0+
 
 After your ```buildscript{}``` and before applying other plugins: 
 
@@ -46,35 +40,53 @@ plugins {
 }
 ```
 
-#### Adding Properties
+#### Required Properties
 
-Add these variables to your ```~/.gradle/gradle.properties``` file (or in project-level gradle.properties file):
+This library uses gradle properties to determine where to search for the dependencies. For example:
+
+```
+rlp_default_group=com.raizlabs.android   # The group to resolve dependencies without a specified artifact equivalent
+rlp_default_library_directory=Libraries      # The default directory to resolve local submodules in (optional, default is "Libraries")
+rlp_default_library_extension=@aar         # The default extension on dependencies without a specified artifact equivalent (optional, default is the empty string. Ex: @aar)
+```
+Add these variables to your global ```~/.gradle/gradle.properties``` file, or in project-level gradle.properties file. 
+
+### ```dependency()```
+
+This is the main method for determining whether to use the local or remote version of a repository. It supports one, two or three parameters.
+
+#### Example
+
+Before:
+
+```groovy 
+
+dependencies {
+
+  // what happens when we want our project to use the local version?
+  compile 'com.raizlabs.android-modules:Connector:+@aar'
+
+  // can't add this here, causes a duplicate dex file exception!
+  compile ':Libraries:Connector'
+}
 
 ```
 
-rlp_default_group=                                                      # The group to resolve dependencies without a specified artifact equivalent (ex. com.google.android)
-rlp_default_library_directory=                                      # The default directory to resolve local submodules in (optional, default is "Libraries"
-rlp_default_library_extension=                                    # The default extension on dependencies without a specified artifact equivalent (optional, default is the empty string. Ex: @aar)
-
-```
-
-### Methods
-
-#### ```dependency()```
-
-This is the main method for determining whether to use the local or remote version of a repository.
+After:
 
 ```groovy
 
 dependencies {
-    // can specify local folder name (assuming it's in :Libraries) and artifact to reference if missing
-    dependency 'AndroidSupport', 'com.android.support:support-v4:20.+'
-    
-    // can compile a single module. This will essentially call:
-    // dependency 'Connector', 'com.raizlabs.android-modules:Connector:+@aar'
+
+    // If the module is in settings.gradle, we use :{defaultLibraryDir}:Connector
+    // If not, we call 'com.raizlabs.android-modules:Connector:+@aar'
     dependency 'Connector'
+
+    // can specify local folder name and artifact to reference if missing
+    // should also be used if we want any kind of version control
+    dependency 'AndroidSupport', 'com.android.support:support-v4:20.+'
   
-    // works for many modules as well for simplicity
+    // works for many modules as well
     dependencies 'Parser', 'FastParser', 'Request',
             'VolleyExecutor', 'PressStateViews', 'EventFactory', 'Core'
 }
@@ -83,17 +95,18 @@ dependencies {
 
 #### ```jarDependency()```
 
-This will do the same action as ```dependency()``` except for jar files. This will traverse the libs/ directory of the root project for the jar to reference locally. 
+This will do the same action as ```dependency()``` except for jar files. This will traverse the libs/ directory of the root project for the jar to reference locally. If the jar is not found in the libs directory, it will try to compile :{defaultLibraryDir}:JarName
 
 ```groovy
 
 dependencies {
+
+    // equivalent as writing compile files('libs/volley.jar'), just provides a much cleaner syntax
+    jarDependency 'volley'
+
     // Will search in the libs/ for 'project-lombok.jar'
     // If not found, it will use maven to locate it
     jarDependency 'project-lombok', 'org.projectlombok:lombok:1.14.4'
-
-   // equivalent as writing compile files('libs/volley.jar'), just provides a much cleaner syntax
-    jarDependency 'volley'
  
     // list of jars instead of writing:
     // compile files('libs/volley.jar', 'libs/project-lombok.jar', 'libs/android-support-v4.jar')

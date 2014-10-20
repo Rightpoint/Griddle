@@ -180,6 +180,14 @@ public class RaizDependencyCompiler {
     }
 
     /**
+     * This function is shorthand for "compile fileTree(dir: "libs" include: "*.jar")"
+     */
+    public void jars() {
+        DependencyHandler dependencyHandler = mProject.getDependencies();
+        dependencyHandler.add("compile", mProject.fileTree("libs").include("*.jar"));
+    }
+
+    /**
      * Compiles a list of jars in the default "\libs" directory
      * @param jars The jar names to compile without the .jar prefix
      */

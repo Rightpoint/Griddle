@@ -13,7 +13,7 @@ apply plugin: 'maven-publish'
 
 apply from: 'configuration.gradle'
 
-version = "1.0.11"
+version = "1.0.12"
 group = "com.raizlabs.android-modules"
 
 dependencies {

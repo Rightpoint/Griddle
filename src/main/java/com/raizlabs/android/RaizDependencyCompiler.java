@@ -16,11 +16,28 @@ import java.util.Set;
  */
 public class RaizDependencyCompiler {
 
+    /**
+     * The project this corresponds to
+     */
     private final Project mProject;
 
+    /**
+     * The modules we found
+     */
     private final Set<String> mModules = new HashSet<String>();
 
-    private final Set<String> mLibraries = new HashSet<String>();
+    /**
+     * The jar libraries we found
+     */
+    private final Set<String> mJars = new HashSet<String>();
+
+    private final boolean printLogs;
+
+    void printLog(String text) {
+        if(printLogs) {
+            System.out.println(text);
+        }
+    }
 
     /**
      * Constructs the instance of this object. It will traverse the settings.gradle file of the root project and find all
@@ -30,6 +47,8 @@ public class RaizDependencyCompiler {
      */
     public RaizDependencyCompiler(Project project) {
         mProject = project;
+
+        printLogs = project.hasProperty(RaizLibraryPlugin.PRINT_LOGS);
 
 
         Project root = project.getRootProject();
@@ -45,8 +64,9 @@ public class RaizDependencyCompiler {
                 String[] modules = line.split(",");
                 for (String module : modules) {
                     module = module.replaceAll("'", "").trim();
-                    if(!mModules.contains(module)) {
-                        System.out.println("*******Found Module***** : " + module);
+                    // not commented and we do not already have the module in the project
+                    if(!module.startsWith("//") && !mModules.contains(module)) {
+                        printLog("*******Found Module***** : " + module);
                         mModules.add(module);
                     }
                 }
@@ -59,16 +79,16 @@ public class RaizDependencyCompiler {
 
         File librariesFile = project.file("libs/");
         if (librariesFile != null && librariesFile.isDirectory()) {
-            System.out.println("Found libs directory. Tracing through files");
+            printLog("Found libs directory. Tracing through files");
             File[] libs = librariesFile.listFiles();
             if (libs != null) {
                 for (File file : libs) {
-                    System.out.println("Found: " + file.getName());
+                    printLog("Found: " + file.getName());
 
                     if (file.isFile() && file.getName().endsWith(".jar")) {
-                        if(!mLibraries.contains(file.getName())) {
-                            System.out.println("*******Found Jar***** : " + file.getName());
-                            mLibraries.add(file.getName());
+                        if(!mJars.contains(file.getName())) {
+                            printLog("*******Found Jar***** : " + file.getName());
+                            mJars.add(file.getName());
                         }
                     }
                 }
@@ -140,11 +160,11 @@ public class RaizDependencyCompiler {
 
         // We found the module locally, compile it locally
         if (mModules.contains(module)) {
-            System.out.println("Compiling local project: " + module);
+            printLog("Compiling local project: " + module);
             dependencyHandler.add(compilationMode, mProject.project(module));
         } else {
             // remote dependency, we will compile it using the params provided
-            System.out.println("Compiling remote dependency: " + artifactName);
+            printLog("Compiling remote dependency: " + artifactName);
             dependencyHandler.add(compilationMode, artifactName);
         }
     }
@@ -230,13 +250,13 @@ public class RaizDependencyCompiler {
         String fileName = jarName.concat(".jar");
 
         // Local dependency
-        if (mLibraries.contains(fileName)) {
+        if (mJars.contains(fileName)) {
             dependencyHandler.add(compilationMode, mProject.files("libs/" + fileName));
-            System.out.println("Compiling local jar: " + jarName);
+            printLog("Compiling local jar: " + jarName);
         } else {
             // Remote dependency
             dependencyHandler.add(compilationMode, artifactName);
-            System.out.println("Compiling remote dependency: " + artifactName);
+            printLog("Compiling remote dependency: " + artifactName);
         }
     }
 }

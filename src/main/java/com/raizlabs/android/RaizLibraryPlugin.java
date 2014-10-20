@@ -67,7 +67,6 @@ public class RaizLibraryPlugin implements Plugin<Project> {
             System.out.println("Found default library extension: " + LIBRARY_EXTENSION);
         }
 
-        // Add our methods to the plugins
         project.getConvention().getPlugins().put("RaizCompiler", new RaizDependencyCompiler(project));
         project.getRepositories().mavenCentral();
     }

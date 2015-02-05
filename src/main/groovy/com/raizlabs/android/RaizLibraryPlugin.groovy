@@ -2,8 +2,6 @@ package com.raizlabs.android
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ConfigurationContainer
 
 /**
  * Author: andrewgrosner
@@ -48,52 +46,59 @@ public class RaizLibraryPlugin implements Plugin<Project> {
 
     private ModuleContainer mModuleContainer;
 
+    private boolean isDebug;
+
+    void printLogs(String formatString, Object...args) {
+        if(isDebug) {
+            println(String.format(formatString, args));
+        }
+    }
+
     @Override
     public void apply(Project project) {
 
-        project.configurations.create('rlp_config')
+        isDebug = project.hasProperty(PRINT_LOGS)
+
+        project.configurations.create("linkSources")
 
         // The default group property
         if (project.hasProperty(DEFAULT_GROUP)) {
-            GROUP = project.property(DEFAULT_GROUP).toString();
-            System.out.println("Found group: " + GROUP);
+            GROUP = project.property(DEFAULT_GROUP).toString()
+            printLogs "Found group: ${GROUP}"
         } else {
             throw new IllegalStateException("Project " + project.getName() + " must have a default group specified in" +
                     "a gradle.properties file. The recommended location is in the global ~/.gradle/ directory.");
         }
 
         if (project.hasProperty(DEFAULT_LIBRARY)) {
-            LIBRARY_DIRECTORY = project.property(DEFAULT_LIBRARY).toString();
-            System.out.println("Found default library: " + LIBRARY_DIRECTORY);
+            LIBRARY_DIRECTORY = project.property(DEFAULT_LIBRARY).toString()
+            printLogs "Found default library: ${LIBRARY_DIRECTORY}"
         }
 
         if (project.hasProperty(DEFAULT_LIBRARY_EXTENSION)) {
             LIBRARY_EXTENSION = project.property(DEFAULT_LIBRARY_EXTENSION).toString();
-            System.out.println("Found default library extension: " + LIBRARY_EXTENSION);
+            printLogs "Found default library extension: ${LIBRARY_EXTENSION}"
         }
 
         project.getConvention().getPlugins().put("RaizCompiler", mModuleContainer = new ModuleContainer(project));
         project.getConvention().getPlugins().put("JarContainer", new JarContainer(project));
         project.getRepositories().jcenter();
-        if (!project.rootProject.tasks.hasProperty('aarLinkSources')) {
+
+        // we will attempt to link sources now.
+        if (!project.rootProject.tasks.hasProperty('linkSources')) {
             System.out.println("Beginning to link sources")
-            final LinkSourcesTask aarLinkSourcesTask = project.rootProject.tasks.create('aarLinkSources', LinkSourcesTask)
+            final LinkSourcesTask aarLinkSourcesTask = project.rootProject.tasks.create('linkSources', LinkSourcesTask)
+            aarLinkSourcesTask.debug = true
 
             project.rootProject.gradle.projectsEvaluated {
                 System.out.println("Linking sources")
                 project.rootProject.allprojects.each {
-                    ConfigurationContainer configurationContainer = it.configurations
-                    System.out.println("Found ${configurationContainer} to process")
-                    if (configurationContainer.hasProperty('rlp_config')) {
-                        Configuration configuration = configurationContainer.getByName('compile')
-
-                        // contains the remote configuration, try to link sources
-                        if (mModuleContainer.remoteModules.contains(configuration.name)) {
-                            configuration.each { File file ->
-                                aarLinkSourcesTask.linkSources file
-                            }
+                    if (it.configurations.hasProperty('linkSources')) {
+                        it.configurations.linkSources.each { File file ->
+                            aarLinkSourcesTask.linkSources file
                         }
                     }
+
                 }
 
                 aarLinkSourcesTask.executeWithoutThrowingTaskFailure();

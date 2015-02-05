@@ -141,6 +141,8 @@ public class ModuleContainer extends BaseContainer {
             // remote dependency, we will compile it using the params provided
             printLog "Compiling remote dependency: ${artifactName}"
             dependencyHandler.add compilationMode, artifactName
+
+            dependencyHandler.add 'linkSources', "${artifactName}:sources@jar"
         }
     }
 

@@ -15,9 +15,6 @@ class LinkSourcesTask extends DefaultTask {
     // Interfaces
     // -------------------------------------------------------------------------------------------------------------------------------------
 
-    void debug(boolean enabled) {
-        debug = enabled
-    }
 
     void linkSources(File file) {
         link file, 'sources'
@@ -33,6 +30,9 @@ class LinkSourcesTask extends DefaultTask {
 
     @TaskAction
     def linkSources() {
+        if(debug) {
+            println "Linking Sources"
+        }
         if (inputs.getProperties() != null) {
             outputs.files.each { File xml ->
                 def root = new XmlParser().parse(xml)

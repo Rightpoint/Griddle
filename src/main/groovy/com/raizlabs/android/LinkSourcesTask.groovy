@@ -7,14 +7,10 @@ import org.gradle.api.tasks.TaskAction
  * Description:
  */
 class LinkSourcesTask extends DefaultTask {
-    private static final String TAG = 'AARLinkSources'
 
     boolean debug = false;
 
-    // -------------------------------------------------------------------------------------------------------------------------------------
-    // Interfaces
-    // -------------------------------------------------------------------------------------------------------------------------------------
-
+    private Set<String> processedFiles = new HashSet<String>()
 
     void linkSources(File file) {
         link file, 'sources'
@@ -24,15 +20,15 @@ class LinkSourcesTask extends DefaultTask {
         link file, 'javadoc'
     }
 
-    // -------------------------------------------------------------------------------------------------------------------------------------
-    // Task Actions
-    // -------------------------------------------------------------------------------------------------------------------------------------
+    void printLog(String log) {
+        if (debug) {
+            println log
+        }
+    }
 
     @TaskAction
     def linkSources() {
-        if(debug) {
-            println "Linking Sources"
-        }
+        printLog "Linking Sources"
         if (inputs.getProperties() != null) {
             outputs.files.each { File xml ->
                 def root = new XmlParser().parse(xml)
@@ -46,26 +42,17 @@ class LinkSourcesTask extends DefaultTask {
 
                 new XmlNodePrinter(new PrintWriter(new FileWriter(xml))).print(root)
 
-                if (debug) {
-                    println "[${TAG}] [Info] Link success: ${xml.name}"
-                }
+                printLog "Link succeeded: ${xml.name}"
             }
         }
     }
 
-    // -------------------------------------------------------------------------------------------------------------------------------------
-    // Tools
-    // -------------------------------------------------------------------------------------------------------------------------------------
-
-    private Set<String> processedFiles = new HashSet<String>()
 
     private void link(File file, String type) {
         String name = file.name
 
         if (!processedFiles.contains(name)) {
-            if (debug) {
-                println "[${TAG}] [Info] Link ${type}: ${name}"
-            }
+            printLog "Link ${type}: ${name}"
 
             processedFiles.add(name)
 
@@ -86,8 +73,8 @@ class LinkSourcesTask extends DefaultTask {
                 if (xml.exists() && xml.isFile()) {
                     inputs.property "${xml.name}:${type}".toString(), generatePath(file)
                     outputs.file xml
-                } else if (debug) {
-                    println "[${TAG}] [Error] No such file: ${xml.absolutePath}"
+                } else {
+                    printLog "No such file: ${xml.absolutePath}"
                 }
             }
         }

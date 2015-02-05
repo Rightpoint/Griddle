@@ -106,10 +106,20 @@ public class ModuleContainer extends BaseContainer {
             if (pattern.matcher(version).find()) {
 
                 // This is a split library declaration
-                if (moduleNotationParts[1].startsWith("{") && moduleNotationParts[1].endsWith("}")) {
+                if (moduleNotationParts[1].startsWith('{') && moduleNotationParts[1].endsWith('}')) {
                     String[] modules = moduleNotationParts[1].replace('{', '').replace('}', '').split(',')
-                    for (String modPart : modules) {
-                        mod modPart, getFullyQualifiedArtifactName(moduleNotationParts[0], modPart, moduleNotationParts[1])
+                    String[] versions = null;
+                    if(moduleNotationParts[2].startsWith('{') && moduleNotationParts[2].endsWith('}')) {
+                        versions = moduleNotationParts[2].replace('{','').replace('}','').split(',')
+                        if(modules.length != versions.length) {
+                            throw new IllegalStateException("Module parts and version parts for ${module}" +
+                                    " must be the same length if version is specified.")
+                        }
+                    }
+                    for (int i = 0; i < modules.length; i++) {
+                        String modPart = modules[i].trim()
+                        mod modPart, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), modPart,
+                                versions != null ? versions[i].trim() : moduleNotationParts[2].trim())
                     }
                 } else {
                     mod module, module

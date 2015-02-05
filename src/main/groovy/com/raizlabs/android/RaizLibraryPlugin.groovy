@@ -87,20 +87,20 @@ public class RaizLibraryPlugin implements Plugin<Project> {
 
         // we will attempt to link sources now.
         if (!project.rootProject.tasks.hasProperty('linkSources')) {
-            final LinkSourcesTask aarLinkSourcesTask = project.rootProject.tasks.create('linkSources', LinkSourcesTask)
-            aarLinkSourcesTask.debug = true
+            final LinkSourcesTask linkSourcesTask = project.rootProject.tasks.create('linkSources', LinkSourcesTask)
+            linkSourcesTask.debug = isDebug
 
             project.rootProject.gradle.projectsEvaluated {
                 project.rootProject.allprojects.each {
                     if (it.configurations.hasProperty('linkSources')) {
                         it.configurations.linkSources.each { File file ->
-                            aarLinkSourcesTask.linkSources file
+                            linkSourcesTask.linkSources file
                         }
                     }
 
                 }
 
-                aarLinkSourcesTask.executeWithoutThrowingTaskFailure();
+                linkSourcesTask.executeWithoutThrowingTaskFailure();
             }
         }
     }

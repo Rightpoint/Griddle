@@ -44,8 +44,6 @@ public class RaizLibraryPlugin implements Plugin<Project> {
      */
     public static String LIBRARY_EXTENSION = "";
 
-    private ModuleContainer mModuleContainer;
-
     private boolean isDebug;
 
     void printLogs(String formatString, Object...args) {
@@ -80,18 +78,19 @@ public class RaizLibraryPlugin implements Plugin<Project> {
             printLogs "Found default library extension: ${LIBRARY_EXTENSION}"
         }
 
-        project.getConvention().getPlugins().put("RaizCompiler", mModuleContainer = new ModuleContainer(project));
+        // adding our methods to the "dependencies" block
+        project.getConvention().getPlugins().put("ModuleContainer", new ModuleContainer(project));
         project.getConvention().getPlugins().put("JarContainer", new JarContainer(project));
+
+        // auto add jcenter
         project.getRepositories().jcenter();
 
         // we will attempt to link sources now.
         if (!project.rootProject.tasks.hasProperty('linkSources')) {
-            System.out.println("Beginning to link sources")
             final LinkSourcesTask aarLinkSourcesTask = project.rootProject.tasks.create('linkSources', LinkSourcesTask)
             aarLinkSourcesTask.debug = true
 
             project.rootProject.gradle.projectsEvaluated {
-                System.out.println("Linking sources")
                 project.rootProject.allprojects.each {
                     if (it.configurations.hasProperty('linkSources')) {
                         it.configurations.linkSources.each { File file ->

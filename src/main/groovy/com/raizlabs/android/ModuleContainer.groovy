@@ -1,6 +1,5 @@
 package com.raizlabs.android
 
-import org.gradle.api.IllegalDependencyNotation
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
@@ -75,6 +74,10 @@ public class ModuleContainer extends BaseContainer {
         ":${RaizLibraryPlugin.LIBRARY_DIRECTORY}:${module}"
     }
 
+    private static String getFullyQualifiedArtifactName(String groupId, String name, String version) {
+        "${groupId}:${name}:${version}"
+    }
+
     /**
      * This will compile a whole listing of modules separated by a comma and surrounded by [].
      *
@@ -96,12 +99,21 @@ public class ModuleContainer extends BaseContainer {
     public void mod(String module) {
         String[] moduleNotationParts = module.split(':')
         if (moduleNotationParts.length > 2) {
-            String version = moduleNotationParts[2];
+            String version = moduleNotationParts[2]
 
             // version checker. If we have a version specified in correct place, its an artifact
-            Pattern pattern = Pattern.compile("[0-9][0-9]?\\.[0-9][0-9]?\\.[0-9][0-9]*");
-            if(pattern.matcher(version).find()) {
-                mod module, module
+            Pattern pattern = Pattern.compile("[0-9][0-9]?\\.[0-9][0-9]?\\.[0-9][0-9]*")
+            if (pattern.matcher(version).find()) {
+
+                // This is a split library declaration
+                if (moduleNotationParts[1].startsWith("{") && moduleNotationParts[1].endsWith("}")) {
+                    String[] modules = moduleNotationParts[1].replace('{', '').replace('}', '').split(',')
+                    for (String modPart : modules) {
+                        mod modPart, getFullyQualifiedArtifactName(moduleNotationParts[0], modPart, moduleNotationParts[1])
+                    }
+                } else {
+                    mod module, module
+                }
             } else {
                 mod module, getArtifactName(module)
             }

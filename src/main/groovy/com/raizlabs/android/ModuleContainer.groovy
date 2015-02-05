@@ -78,25 +78,44 @@ public class ModuleContainer extends BaseContainer {
         "${groupId}:${name}:${version}"
     }
 
+    protected static boolean hasBrackets(String compare) {
+        compare.startsWith('{') && compare.endsWith('}')
+    }
+
+    protected static String[] getParts(String string) {
+        string.replace('{', '').replace('}', '').split(',')
+    }
+
     /**
-     * This will compile a whole listing of modules separated by a comma and surrounded by [].
-     *
-     * @param modules the list of modules we wish to apply compile to
-     * @see #mod(String)
+     * Declares a module has having no source for the module
+     * @param module Can be any of the standard mod formatting
      */
-    public void mods(String[] modules) {
-        modules.each { String m ->
-            mod m
-        }
+    public void nsMod(String module) {
+        modResolve false, module
+    }
+
+    /**
+     * Declares a module with source automatically added for the module.
+     * @param module Can be: full artifact name (the standard notation), simply a module name (which will get appended the
+     * default library prefix if local, otherwise uses the group id and + for its remote), or a "swizzled" artifact notation.
+     * Ex: mod 'com.raizlabs.android:{DBFlow-Core, DBFlow}:1.4.1' is the same as writing
+     *
+     * mod 'com.raizlabs.android:DBFlow-Core:1.4.1'
+     * mod 'com.raizlabs.android:DBFlow:1.4.1'
+     *
+     * Also if names are specified, then versions can also be, except version names MUST be the same length as the names. If a
+     * local module with the same "swizzled" name is found in the settings.gradle, then the local version is used instead.
+     */
+    public void mod(String module) {
+        modResolve true, module
     }
 
     /**
      * This will always use the latest, non-snapshot version of the module specified.
      *
      * @param module the name of the module, does not have to be fully qualified as we will assume all libs are in "Libraries"
-     * @see #mod(String, String)
      */
-    public void mod(String module) {
+    private void modResolve(boolean addSource, String module) {
         String[] moduleNotationParts = module.split(':')
         if (moduleNotationParts.length > 2) {
             String version = moduleNotationParts[2]
@@ -106,29 +125,29 @@ public class ModuleContainer extends BaseContainer {
             if (pattern.matcher(version).find()) {
 
                 // This is a split library declaration
-                if (moduleNotationParts[1].startsWith('{') && moduleNotationParts[1].endsWith('}')) {
-                    String[] modules = moduleNotationParts[1].replace('{', '').replace('}', '').split(',')
+                if (hasBrackets(moduleNotationParts[1])) {
+                    String[] modules = getParts(moduleNotationParts[1])
                     String[] versions = null;
-                    if(moduleNotationParts[2].startsWith('{') && moduleNotationParts[2].endsWith('}')) {
-                        versions = moduleNotationParts[2].replace('{','').replace('}','').split(',')
-                        if(modules.length != versions.length) {
+                    if (hasBrackets(moduleNotationParts[2])) {
+                        versions = getParts(moduleNotationParts[2])
+                        if (modules.length != versions.length) {
                             throw new IllegalStateException("Module parts and version parts for ${module}" +
                                     " must be the same length if version is specified.")
                         }
                     }
                     for (int i = 0; i < modules.length; i++) {
                         String modPart = modules[i].trim()
-                        mod modPart, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), modPart,
+                        compileMod addSource, modPart, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), modPart,
                                 versions != null ? versions[i].trim() : moduleNotationParts[2].trim())
                     }
                 } else {
-                    mod module, module
+                    compileMod addSource, module, module
                 }
             } else {
-                mod module, getArtifactName(module)
+                compileMod addSource, module, getArtifactName(module)
             }
         } else {
-            mod module, getArtifactName(module)
+            compileMod addSource, module, getArtifactName(module)
         }
     }
 
@@ -139,8 +158,8 @@ public class ModuleContainer extends BaseContainer {
      * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      * @see #mod(String, String, String)
      */
-    public void mod(String module, String artifactName) {
-        mod 'compile', getFullyQualifiedName(module), artifactName
+    private void compileMod(boolean addSource, String module, String artifactName) {
+        modAdd addSource, 'compile', getFullyQualifiedName(module), artifactName
     }
 
     /**
@@ -151,56 +170,22 @@ public class ModuleContainer extends BaseContainer {
      * @param module the name of the module, most always the fully-qualified name of the module (i.e: ":Libraries:Core"
      * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      */
-    public void mod(String compilationMode, String module, String artifactName) {
+    private void modAdd(boolean addSource, String compilationMode, String module, String artifactName) {
         DependencyHandler dependencyHandler = project.getDependencies();
 
         // We found the module locally, compile it locally
         if (mModules.contains(module)) {
             printLog "Compiling local project: ${module}"
             dependencyHandler.add compilationMode, project.project(module)
-        } else {
+        } else if (!mRemoteModules.contains(artifactName)) {
             mRemoteModules.add(artifactName);
             // remote dependency, we will compile it using the params provided
             printLog "Compiling remote dependency: ${artifactName}"
             dependencyHandler.add compilationMode, artifactName
 
-            dependencyHandler.add 'linkSources', "${artifactName}:sources@jar"
+            if (addSource) {
+                dependencyHandler.add 'linkSources', "${artifactName}:sources@jar"
+            }
         }
-    }
-
-    /**
-     * This will runtime a whole listing of modules separated by a comma and surrounded by [].
-     *
-     * @param modules the list of modules we wish to apply compile to
-     * @see #mod(String)
-     */
-    public void rtMod(String[] modules) {
-        modules.each { String m ->
-            rtMod m
-        }
-    }
-
-    /**
-     * This will always use the latest, non-snapshot version of the module specified
-     *
-     * @param module
-     */
-    public void rtMod(String module) {
-        rtMod module, getArtifactName(module)
-    }
-
-    /**
-     * This function will runtime a module locally if the inclusion exists within the settings.gradle. If not,
-     * it will use the args provided for a remote compile lookup
-     *
-     * @param module the name of the module, does not have to be fully qualified as we will assume all libs are in "Libraries"
-     * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
-     */
-    public void rtMod(String module, String artifactName) {
-        mod 'runtime', getFullyQualifiedName(module), artifactName
-    }
-
-    Set<String> getRemoteModules() {
-        return mRemoteModules
     }
 }

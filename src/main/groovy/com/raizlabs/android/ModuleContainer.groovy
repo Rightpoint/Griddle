@@ -88,10 +88,21 @@ public class ModuleContainer extends BaseContainer {
 
     /**
      * Declares a module has having no source for the module
+     * @see {@link #mod(String)}
      * @param module Can be any of the standard mod formatting
      */
     public void nsMod(String module) {
-        modResolve false, module
+        nsMod module, 'compile'
+    }
+
+    /**
+     * Declares a module has having no source for the module
+     * @see {@link #mod(String)}
+     * @param module Can be any of the standard mod formatting
+     * @param configuration the configuration name to run
+     */
+    public void nsMod(String module, String configuration) {
+        modResolve configuration, false, module
     }
 
     /**
@@ -107,7 +118,24 @@ public class ModuleContainer extends BaseContainer {
      * local module with the same "swizzled" name is found in the settings.gradle, then the local version is used instead.
      */
     public void mod(String module) {
-        modResolve true, module
+        mod module, 'compile'
+    }
+
+    /**
+     * Declares a module with source automatically added for the module.
+     * @param module Can be: full artifact name (the standard notation), simply a module name (which will get appended the
+     * default library prefix if local, otherwise uses the group id and + for its remote), or a "swizzled" artifact notation.
+     * Ex: mod 'com.raizlabs.android:{DBFlow-Core, DBFlow}:1.4.1', 'debugCompile' is the same as writing
+     *
+     * mod 'com.raizlabs.android:DBFlow-Core:1.4.1', 'debugCompile'
+     * mod 'com.raizlabs.android:DBFlow:1.4.1', 'debugCompile'
+     *
+     * Also if names are specified, then versions can also be, except version names MUST be the same length as the names. If a
+     * local module with the same "swizzled" name is found in the settings.gradle, then the local version is used instead.
+     * @param configuration The configuration name to run
+     */
+    public void mod(String module, String configuration) {
+        modResolve configuration, true, module
     }
 
     /**
@@ -115,7 +143,7 @@ public class ModuleContainer extends BaseContainer {
      *
      * @param module the name of the module, does not have to be fully qualified as we will assume all libs are in "Libraries"
      */
-    private void modResolve(boolean addSource, String module) {
+    private void modResolve(String compileMode, boolean addSource, String module) {
         String[] moduleNotationParts = module.split(':')
         if (moduleNotationParts.length > 2) {
             String version = moduleNotationParts[2]
@@ -137,17 +165,17 @@ public class ModuleContainer extends BaseContainer {
                     }
                     for (int i = 0; i < modules.length; i++) {
                         String modPart = modules[i].trim()
-                        compileMod addSource, modPart, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), modPart,
+                        methodMod compileMode, addSource, modPart, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), modPart,
                                 versions != null ? versions[i].trim() : moduleNotationParts[2].trim())
                     }
                 } else {
-                    compileMod addSource, module, module
+                    methodMod compileMode, addSource, module, module
                 }
             } else {
-                compileMod addSource, module, getArtifactName(module)
+                methodMod compileMode, addSource, module, getArtifactName(module)
             }
         } else {
-            compileMod addSource, module, getArtifactName(module)
+            methodMod compileMode, addSource, module, getArtifactName(module)
         }
     }
 
@@ -158,8 +186,8 @@ public class ModuleContainer extends BaseContainer {
      * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      * @see #mod(String, String, String)
      */
-    private void compileMod(boolean addSource, String module, String artifactName) {
-        modAdd addSource, 'compile', getFullyQualifiedName(module), artifactName
+    private void methodMod(String method, boolean addSource, String module, String artifactName) {
+        modAdd addSource, method, getFullyQualifiedName(module), artifactName
     }
 
     /**

@@ -4,25 +4,18 @@ buildscript {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 apply from: 'configuration.gradle'
 
-version = "1.0.0"
-group = "com.raizlabs"
-
 dependencies {
     compile gradleApi()
-}
-
-sourceCompatibility = 1.6
-
-jar.baseName = 'griddle'
-
-repositories {
-    jcenter()
 }
 
 task sourcesJar(type: Jar) {

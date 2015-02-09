@@ -52,12 +52,40 @@ The ```mod()``` and ```nsMod()``` functions are a wrapper around a ```compile```
   1. Automatic determination if there is a local or remote dependency 
   2. **only mod()** Automatically links a ```sources.jar``` to a remote dependency 
   3. Custom artifact notation to "swizzle" in multiple dependencies from the same repo
+  
+#### Sample
+
+```groovy
+
+mod 'com.raizlabs.android:Parser:1.2.0'
+
+mod 'com.raizlabs.android:{DBFlow-Core, DBFlow}:1.4.2'
+
+mod 'Parser'
+
+mod 'com.raizlabs.android:{Parser, local: Parser:Parser}:1.2.0'
+
+```
 
 #### Remote vs. Local
 
 Many times in projects we have a list of dependencies that we utilize and they either specify a remote or local dependency. To simplify this process and enable us to __dynamically__ switch between local and remote as needed, this plugin provides you with a very simple and powerful way such that you will never need to modify your projects ```build.gradle```. 
 
 Dependency resolution for local vs. remote is determined if a project exists in the ```settings.gradle```. Aiding in that aspect is the ```griddle_default_library_directory``` that will help specify its location when we omit the directory prefix in a ```mod()``` or ```nsMod()``` statement. 
+
+You can specify different names for local vs. remote by specifying the following:
+
+```groovy
+
+mod 'artifactId:{{moduleName, local: localModuleName}}:version'
+
+mod 'artifactId:{{remote: moduleName, localModuleName}}:version'
+
+mod 'artifactId:{{remote: moduleName, local: localModuleName}}:version'
+
+mod 'artifactId:{{moduleName, localModuleName}}:version'
+
+```
 
 #### Linking Sources
 

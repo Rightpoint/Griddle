@@ -73,7 +73,6 @@ For multiple dependencies coming from the same repo that all have to share the s
 ```groovy
 
 dependencies {
-
   compile 'com.google.android.gms:play-services-maps:6.5.87'
   compile 'com.google.android.gms:play-services-location:6.5.87'
   compile 'com.google.android.gms:play-services-plus:6.5.87'
@@ -96,17 +95,29 @@ dependencies {
 
  Using the ```mod``` or ```nsMod``` in this format: ```mod 'groupId:artifactName:artifactVersion'``` you can:
  
-   1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas
+   1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas. If you place one or more of the comma-separated items in ```{}```, you can specify remote vs local such like:
+   
+```groovy
+mod 'com.raizlabs.android:{BaseUtils, {WebServiceManager, local: WebServiceManager:WebServiceManager}}:1.0.0'
+```
+
    2. If (1) is used, you can place ```{}``` around the ```artifactVersion``` and specify a per-dependency version. **Note** the length of comma-separated ```artifactNames``` must match the versions specified.
-   3. Add a configuration (such as ```compileDebug```) name to the end of the function: ```mod 'groupId:artifactName:artifactVersion', 'compileDebug'```
+   3. Add a configuration (such as ```compileDebug```) name to the end of the function:
+   
+```groovy
+mod 'groupId:artifactName:artifactVersion', 'compileDebug'
+```
 
 **Note** any artifact specified this way will automatically utilize the next feature of this library. If there is a local version available in the ```settings.gradle``` by combining these properties:  
 
  Specifying in this format: ```mod 'artifactName'```:
   1. Utilizes the ```griddle_default_group``` if the local version is missing
   2. Utilizes ```griddle_default_library_directory``` to find the local version of this repo
-  3. Uses the ```griddle_default_library_extension``` if local version is missing by appending it to create the ```compile 'groupId:artifactName:artifactVersion{extension}'```
-  
+  3. Uses the ```griddle_default_library_extension``` if local version is missing by appending it to create the 
+ 
+```groovy
+compile 'groupId:artifactName:artifactVersion{extension}'
+```
 
 ### jar()
 

@@ -96,7 +96,7 @@ dependencies {
 
  Using the ```mod``` or ```nsMod``` in this format: ```mod 'groupId:artifactName:artifactVersion'``` you can:
  
-   1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas. If you place one or more of the comma-separated items in ```{}```, you canm specify remote vs local such like:
+   1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas. If you place one or more of the comma-separated items in ```{}```, you can specify remote vs local such like:
    
 ```groovy
 mod 'com.raizlabs.android:{BaseUtils, {WebServiceManager, local: WebServiceManager:WebServiceManager}}:1.0.0'

@@ -1,3 +1,5 @@
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-1.0.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
+
 # Griddle
 
 A powerful dependency management solution for Android/Java-based gradle build environments. It drastically reduces the complexity of ```build.gradle``` files while providing powerful and flexible dependency resolution on top of normal **Gradle**. It handles linking remote sources for you __automatically__.

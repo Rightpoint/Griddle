@@ -33,3 +33,6 @@ task sourcesJar(type: Jar) {
 task generate {
     dependsOn clean, jar, sourcesJar
 }
+
+apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/java-artifacts.gradle'
+apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/maven_push.gradle'

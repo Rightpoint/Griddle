@@ -213,6 +213,8 @@ public class ModuleContainer extends BaseContainer {
     private void modAdd(boolean addSource, String compilationMode, String module, String artifactName) {
         DependencyHandler dependencyHandler = project.getDependencies();
 
+        printLog "Comparing ${module} with ${artifactName} for dependency"
+
         // We found the module locally, compile it locally
         if (mModules.contains(module)) {
             printLog "Compiling local project: ${module}"

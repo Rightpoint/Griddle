@@ -48,7 +48,7 @@ Add these variables to your global ```~/.gradle/gradle.properties``` file, or in
 
 The ```mod()``` and ```nsMod()``` functions are a wrapper around a ```compile``` statement and provides the following:
 
-  1. Automatic determination if there is a local dependency of a dependency
+  1. Automatic determination if there is a local or remote dependency 
   2. **only mod()** Automatically links a ```sources.jar``` to a remote dependency 
   3. Custom artifact notation to "swizzle" in multiple dependencies from the same repo
 

@@ -166,7 +166,18 @@ public class ModuleContainer extends BaseContainer {
                     }
                     for (int i = 0; i < modules.length; i++) {
                         String modPart = modules[i].trim()
-                        methodMod compileMode, addSource, modPart, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), modPart,
+                        String localName = modPart
+                        String remoteName = modPart
+                        if (hasBrackets(modPart)) {
+                            String[] names = getParts(modPart)
+                            if (names.length != 2) {
+                                throw new IllegalStateException("A module part that has nested brackets must specify remote and local names")
+                            } else {
+                                remoteName = names[0]
+                                localName = names[1]
+                            }
+                        }
+                        methodMod compileMode, addSource, localName, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), remoteName,
                                 versions != null ? versions[i].trim() : moduleNotationParts[2].trim())
                     }
                 } else {

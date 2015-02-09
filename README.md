@@ -27,15 +27,14 @@ apply plugin: 'com.raizlabs.griddle'
 
 ```
 
-#### Required Properties
+#### Optional Properties
 
 This library uses gradle properties to determine where to search for the dependencies. For example:
 
-```
-griddle_default_group=com.raizlabs.android   # The group to resolve dependencies without a specified artifact equivalent
-griddle_default_library_directory=Libraries      # The default directory to resolve local submodules in (optional, default is "Libraries")
-griddle_default_library_extension=@aar         # The default extension on dependencies without a specified artifact equivalent (optional, default is the empty string. Ex: @aar)
-```
+```griddle_default_group```: The group to resolve dependencies without a specified artifact equivalent when simply specifying a name for the dependency.
+```griddle_default_library_directory```: The default directory to resolve local submodules in. Default is ":Libraries"
+```griddle_default_library_extension```: The default extension on dependencies when simply specifying a name for the dependency and the local version is not found. Default is empty. You can specify something like ```@aar``` or ```@jar``` if needed. 
+
 Add these variables to your global ```~/.gradle/gradle.properties``` file, or in project-level gradle.properties file. 
 
 ## Methods
@@ -45,11 +44,17 @@ Add these variables to your global ```~/.gradle/gradle.properties``` file, or in
 
 ### mod + nsMod
 
-The ```mod()``` function is a wrapper around a ```compile``` statement and provides the following:
+The ```mod()``` and ```nsMod()``` functions are a wrapper around a ```compile``` statement and provides the following:
 
-  1. Automatically links a ```sources.jar``` to the dependency
-  2. Custom artifact notation to "swizzle" in multiple dependencies from the same repo
-  3. Will use the specified artifact name if a local dependency in the ```settings.gradle``` is included
+  1. Automatic determination if there is a local dependency of a dependency
+  2. **only mod()** Automatically links a ```sources.jar``` to a remote dependency 
+  3. Custom artifact notation to "swizzle" in multiple dependencies from the same repo
+
+#### Remote vs. Local
+
+Many times in projects we have a list of dependencies that we utilize and they either specify a remote or local dependency. To simplify this process and enable us to __dynamically__ switch between local and remote as needed, this plugin provides you with a very simple and powerful way such that you will never need to modify your projects ```build.gradle```. 
+
+Dependency resolution for local vs. remote is determined if a project exists in the ```settings.gradle```. Aiding in that aspect is the ```griddle_default_library_directory``` that will help specify its location when we omit the directory prefix in a ```mod()``` or ```nsMod()``` statement. 
 
 #### Linking Sources
 
@@ -87,12 +92,20 @@ dependencies {
 
 ##### Custom Notation Features
 
- For a ```mod 'groupId:artifactName:artifactVersion'``` you can:
+ Using the ```mod``` or ```nsMod``` in this format: ```mod 'groupId:artifactName:artifactVersion'``` you can:
  
    1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas
    2. If (1) is used, you can place ```{}``` around the ```artifactVersion``` and specify a per-dependency version. **Note** the length of comma-separated ```artifactNames``` must match the versions specified.
    3. Add a configuration (such as ```compileDebug```) name to the end of the function: ```mod 'groupId:artifactName:artifactVersion', 'compileDebug'```
-   
+
+**Note** any artifact specified this way will automatically utilize the next feature of this library. If there is a local version available in the ```settings.gradle``` by combining these properties:  
+
+ Specifying in this format: ```mod 'artifactName'```:
+  1. Utilizes the ```griddle_default_group``` if the local version is missing
+  2. Utilizes ```griddle_default_library_directory``` to find the local version of this repo
+  3. Uses the ```griddle_default_library_extension``` if local version is missing by appending it to create the ```compile 'groupId:artifactName:artifactVersion{extension}'```
+  
+
 ### jar()
 
 For specifying a jar dependency, we usually specify it this way:

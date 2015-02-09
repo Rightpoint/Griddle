@@ -1,5 +1,4 @@
-The RaizLibraryPlugin for Gradle
-================================
+# Griddle
 
 Do you ever run into a scenario where you have multiple subprojects, and they point to both a local and remote version of the library your'e building? Or a subproject references a local version that does not exist, however exists in maven/ivy? Instead of having to modify the ```build.gradle``` file at all and having to worry about if the dependencies are local or remote, this plugin handles that determination by scanning the project's ```settings.gradle``` file and uses the inclusions there to determine whether to use local vs remote. 
 

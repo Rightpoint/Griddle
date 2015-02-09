@@ -173,8 +173,8 @@ public class ModuleContainer extends BaseContainer {
                             if (names.length != 2) {
                                 throw new IllegalStateException("A module part that has nested brackets must specify remote and local names")
                             } else {
-                                remoteName = names[0]
-                                localName = names[1]
+                                remoteName = names[0].trim().replace("remote: ", "")
+                                localName = names[1].trim().replace("local: ","")
                             }
                         }
                         methodMod compileMode, addSource, localName, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), remoteName,

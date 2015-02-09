@@ -15,18 +15,18 @@ public class JarContainer extends BaseContainer {
 
     public JarContainer(Project project) {
         super(project);
-        File librariesFile = getProject().file("libs/");
-        if (librariesFile != null && librariesFile.isDirectory()) {
-            printLog("Found libs directory. Tracing through files");
+        File librariesFile = project.file('libs/')
+        if (librariesFile && librariesFile.isDirectory()) {
+            printLog "Found libs directory. Tracing through files"
             File[] libs = librariesFile.listFiles();
-            if (libs != null) {
-                for (File file : libs) {
-                    printLog("Found: " + file.getName());
+            if (libs) {
+                libs.each { File file ->
+                    printLog("Found: " + file.name);
 
-                    if (file.isFile() && file.getName().endsWith(".jar")) {
-                        if (!mJars.contains(file.getName())) {
-                            printLog("*******Found Jar***** : " + file.getName());
-                            mJars.add(file.getName());
+                    if (file.isFile() && file.name.endsWith('.jar')) {
+                        if (!mJars.contains(file.name)) {
+                            printLog "*******Found Jar***** : ${file.name}"
+                            mJars.add(file.name)
                         }
                     }
                 }
@@ -38,18 +38,7 @@ public class JarContainer extends BaseContainer {
      * This function is shorthand for "compile fileTree(dir: "libs" include: "*.jar")"
      */
     public void jars() {
-        DependencyHandler dependencyHandler = getProject().getDependencies();
-        dependencyHandler.add("compile", getProject().fileTree("libs").include("*.jar"));
-    }
-
-    /**
-     * Compiles a list of jars in the default "\libs" directory
-     * @param jars The jar names to compile without the .jar prefix
-     */
-    public void jar(String[] jars) {
-        for(String jar: jars) {
-            jar(jar);
-        }
+        project.dependencies.add("compile", project.fileTree("libs").include("*.jar"));
     }
 
     /**
@@ -57,18 +46,7 @@ public class JarContainer extends BaseContainer {
      * @param jarName The name of the jar file without the extension .jar
      */
     public void jar(String jarName) {
-        jar("compile", jarName, "");
-    }
-
-    /**
-     * Uses the default "compile" configuration.
-     *
-     * @param jarName      the name of the jar file without the extension
-     * @param artifactName the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
-     * @see #dependency(String, String, String)
-     */
-    public void jar(String jarName, String artifactName) {
-        jar("compile", jarName, artifactName);
+        jar("compile", jarName);
     }
 
     /**
@@ -79,19 +57,15 @@ public class JarContainer extends BaseContainer {
      * @param jarName         the name of the jar file without the extension
      * @param artifactName    the fully qualified artifact name e.g: 'com.android.support:support-v4:1.xx.xx'
      */
-    public void jar(String compilationMode, String jarName, String artifactName) {
-        DependencyHandler dependencyHandler = getProject().getDependencies();
-
-        String fileName = jarName.concat(".jar");
+    public void jar(String compilationMode, String jarName) {
+        String fileName = jarName.concat(".jar")
 
         // Local dependency
         if (mJars.contains(fileName)) {
-            dependencyHandler.add(compilationMode, getProject().files("libs/" + fileName));
-            printLog("Compiling local jar: " + jarName);
+            project.dependencies.add(compilationMode, getProject().files("libs/" + fileName))
+            printLog "Compiling local jar: " + jarName
         } else {
-            // Remote dependency
-            dependencyHandler.add(compilationMode, artifactName);
-            printLog("Compiling remote dependency: " + artifactName);
+            printLog "Could not find local jar: ${jarName}"
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.raizlabs.android
+package com.raizlabs
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
@@ -61,7 +61,7 @@ public class ModuleContainer extends BaseContainer {
      * @return
      */
     private static String getArtifactName(String module) {
-        "${RaizLibraryPlugin.GROUP}:${module}:+${RaizLibraryPlugin.LIBRARY_EXTENSION}"
+        "${GriddlePlugin.GROUP}:${module}:+${GriddlePlugin.LIBRARY_EXTENSION}"
     }
 
     /**
@@ -71,7 +71,7 @@ public class ModuleContainer extends BaseContainer {
      * @return
      */
     private static String getFullyQualifiedName(String module) {
-        ":${RaizLibraryPlugin.LIBRARY_DIRECTORY}:${module}"
+        ":${GriddlePlugin.LIBRARY_DIRECTORY}:${module}"
     }
 
     private static String getFullyQualifiedArtifactName(String groupId, String name, String version) {
@@ -139,7 +139,8 @@ public class ModuleContainer extends BaseContainer {
     }
 
     /**
-     * This will always use the latest, non-snapshot version of the module specified.
+     * This will resolve the notation for the module string passed in.
+     * @see {@link #mod(String)} for more details
      *
      * @param module the name of the module, does not have to be fully qualified as we will assume all libs are in "Libraries"
      */
@@ -169,7 +170,7 @@ public class ModuleContainer extends BaseContainer {
                                 versions != null ? versions[i].trim() : moduleNotationParts[2].trim())
                     }
                 } else {
-                    methodMod compileMode, addSource, module, module
+                    methodMod compileMode, addSource, moduleNotationParts[1], module
                 }
             } else {
                 methodMod compileMode, addSource, module, getArtifactName(module)

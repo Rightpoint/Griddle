@@ -1,28 +1,48 @@
-package com.raizlabs.android;
+package com.raizlabs
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
- * Description:
+ * Description: Responsible for linking the sources jar files to the dependency files for the whole project.
  */
 class LinkSourcesTask extends DefaultTask {
 
     boolean debug = false;
 
+    /**
+     * The files looked at
+     */
     private Set<String> processedFiles = new HashSet<String>()
 
-    void linkSources(File file) {
-        link file, 'sources'
-    }
-
-    void linkJavadoc(File file) {
-        link file, 'javadoc'
-    }
-
+    /**
+     * Print if debug
+     * @param log The output to write
+     */
     void printLog(String log) {
         if (debug) {
             println log
+        }
+    }
+
+    void linkSources(File file) {
+        link(file, 'sources')
+    }
+
+    /**
+     * Loops through evaluated projects and will look for sources to attach to specific repository.
+     */
+    void linkSourcesFromProject() {
+        project.rootProject.gradle.projectsEvaluated {
+            project.rootProject.allprojects.each {
+                if (it.configurations.hasProperty('linkSources')) {
+                    it.configurations.linkSources.each { File file ->
+                        linkSources(file)
+                    }
+                }
+            }
+
+            executeWithoutThrowingTaskFailure();
         }
     }
 
@@ -36,8 +56,6 @@ class LinkSourcesTask extends DefaultTask {
                 def path = null;
                 if ((path = inputs.getProperties().get("${xml.name}:sources".toString()))) {
                     appendPath(root.library[0].SOURCES[0], path)
-                } else if ((path = inputs.getProperties().get("${xml.name}:javadoc".toString()))) {
-                    appendPath(root.library[0].JAVADOC[0], path)
                 }
 
                 new XmlNodePrinter(new PrintWriter(new FileWriter(xml))).print(root)
@@ -47,7 +65,11 @@ class LinkSourcesTask extends DefaultTask {
         }
     }
 
-
+    /**
+     * Links a file with the specified type
+     * @param file The file to link with a corresponding type
+     * @param type
+     */
     private void link(File file, String type) {
         String name = file.name
 
@@ -80,6 +102,10 @@ class LinkSourcesTask extends DefaultTask {
         }
     }
 
+    /**
+     * @param file The file we want to link to sources.
+     * @return A path appending user home or project directory to the file location so we can link name to this path.
+     */
     private String generatePath(File file) {
         String path = file.absolutePath
 
@@ -93,6 +119,12 @@ class LinkSourcesTask extends DefaultTask {
         path.replaceAll(/\\+/, '/')
     }
 
+    /**
+     * Appends the root url as a path to the sources JAR
+     * @param node The node
+     * @param path The path to the jar
+     * @return
+     */
     static def appendPath(Object node, Object path) {
         if (node) {
             node.children().clear()

@@ -1,4 +1,4 @@
-package com.raizlabs.android;
+package com.raizlabs;
 
 import org.gradle.api.Project;
 
@@ -13,7 +13,7 @@ public class BaseContainer {
 
     public BaseContainer(Project project) {
         this.mProject = project;
-        printLogs = project.hasProperty(RaizLibraryPlugin.PRINT_LOGS);
+        printLogs = project.hasProperty(GriddlePlugin.PRINT_LOGS);
     }
 
     public Project getProject() {

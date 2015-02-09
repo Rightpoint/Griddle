@@ -1,4 +1,4 @@
-package com.raizlabs.android
+package com.raizlabs
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -7,7 +7,7 @@ import org.gradle.api.Project
  * Author: andrewgrosner
  * Description: This plugin handles supplying the build process with the correct dependencies to use.
  */
-public class RaizLibraryPlugin implements Plugin<Project> {
+public class GriddlePlugin implements Plugin<Project> {
 
     /**
      * Property key that specifies the default group to resolve if we simply specify the name of an artifact.
@@ -82,26 +82,11 @@ public class RaizLibraryPlugin implements Plugin<Project> {
         project.getConvention().getPlugins().put("ModuleContainer", new ModuleContainer(project));
         project.getConvention().getPlugins().put("JarContainer", new JarContainer(project));
 
-        // auto add jcenter
-        project.getRepositories().jcenter();
-
         // we will attempt to link sources now.
         if (!project.rootProject.tasks.hasProperty('linkSources')) {
             final LinkSourcesTask linkSourcesTask = project.rootProject.tasks.create('linkSources', LinkSourcesTask)
             linkSourcesTask.debug = isDebug
-
-            project.rootProject.gradle.projectsEvaluated {
-                project.rootProject.allprojects.each {
-                    if (it.configurations.hasProperty('linkSources')) {
-                        it.configurations.linkSources.each { File file ->
-                            linkSourcesTask.linkSources file
-                        }
-                    }
-
-                }
-
-                linkSourcesTask.executeWithoutThrowingTaskFailure();
-            }
+            linkSourcesTask.linkSourcesFromProject();
         }
     }
 

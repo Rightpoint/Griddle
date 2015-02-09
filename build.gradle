@@ -11,7 +11,7 @@ apply plugin: 'maven-publish'
 apply from: 'configuration.gradle'
 
 version = "1.0.0"
-group = "com.raizlabs.android"
+group = "com.raizlabs"
 
 dependencies {
     compile gradleApi()
@@ -19,7 +19,7 @@ dependencies {
 
 sourceCompatibility = 1.6
 
-jar.baseName = 'libraryplugin'
+jar.baseName = 'griddle'
 
 repositories {
     jcenter()

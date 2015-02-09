@@ -1,11 +1,7 @@
-package com.raizlabs.android;
+package com.raizlabs;
 
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import org.gradle.api.artifacts.dsl.DependencyHandler
 
 /**
  * Description:

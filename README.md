@@ -172,3 +172,8 @@ dependencies {
 ```
 
 The ```jar()``` method will automatically append ```libs``` and ```.jar``` to the dependency to clean up the look of the file. If you need all jars, use the method ```jars()``` to mimic the ```compile fileTree("libs", include: "*.jar")```
+
+
+# Maintainers
+
+[agrosner](https://github.com/agrosner) ([@agrosner](https://www.twitter.com/agrosner))

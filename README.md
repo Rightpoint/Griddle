@@ -32,7 +32,9 @@ apply plugin: 'com.raizlabs.griddle'
 This library uses gradle properties to determine where to search for the dependencies. For example:
 
 ```griddle_default_group```: The group to resolve dependencies without a specified artifact equivalent when simply specifying a name for the dependency.
+
 ```griddle_default_library_directory```: The default directory to resolve local submodules in. Default is ":Libraries"
+
 ```griddle_default_library_extension```: The default extension on dependencies when simply specifying a name for the dependency and the local version is not found. Default is empty. You can specify something like ```@aar``` or ```@jar``` if needed. 
 
 Add these variables to your global ```~/.gradle/gradle.properties``` file, or in project-level gradle.properties file. 

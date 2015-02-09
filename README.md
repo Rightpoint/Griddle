@@ -96,7 +96,12 @@ dependencies {
 
  Using the ```mod``` or ```nsMod``` in this format: ```mod 'groupId:artifactName:artifactVersion'``` you can:
  
-   1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas
+   1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas. If you place one or more of the comma-separated items in ```{}```, you canm specify remote vs local such like:
+   
+```groovy
+mod 'com.raizlabs.android:{BaseUtils, {WebServiceManager, local: WebServiceManager:WebServiceManager}}:1.0.0'
+```
+
    2. If (1) is used, you can place ```{}``` around the ```artifactVersion``` and specify a per-dependency version. **Note** the length of comma-separated ```artifactNames``` must match the versions specified.
    3. Add a configuration (such as ```compileDebug```) name to the end of the function: ```mod 'groupId:artifactName:artifactVersion', 'compileDebug'```
 

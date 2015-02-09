@@ -12,17 +12,17 @@ public class GriddlePlugin implements Plugin<Project> {
     /**
      * Property key that specifies the default group to resolve if we simply specify the name of an artifact.
      */
-    public static final String DEFAULT_GROUP = "rlp_default_group";
+    public static final String DEFAULT_GROUP = "griddle_default_group";
 
     /**
      * Property key that specifies the default library directory to search for local dependencies in relation to the project's root.
      */
-    public static final String DEFAULT_LIBRARY = "rlp_default_library_directory";
+    public static final String DEFAULT_LIBRARY = "griddle_default_library_directory";
 
     /**
      * Propertey key that specifies the default library extension on the unresolved artifact name. e.g. '@aar'
      */
-    public static final String DEFAULT_LIBRARY_EXTENSION = "rlp_default_library_extension";
+    public static final String DEFAULT_LIBRARY_EXTENSION = "griddle_default_library_extension";
 
     /**
      * Property key. If this is present, we will print logs from the compiler
@@ -64,8 +64,8 @@ public class GriddlePlugin implements Plugin<Project> {
             GROUP = project.property(DEFAULT_GROUP).toString()
             printLogs "Found group: ${GROUP}"
         } else {
-            throw new IllegalStateException("Project " + project.getName() + " must have a default group specified in" +
-                    "a gradle.properties file. The recommended location is in the global ~/.gradle/ directory.");
+            printLogs "Project ${project.getName()} is missing a default group specified in" +
+                    "a gradle.properties file. The recommended location is in the global ~/.gradle/ directory."
         }
 
         if (project.hasProperty(DEFAULT_LIBRARY)) {

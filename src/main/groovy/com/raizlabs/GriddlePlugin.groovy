@@ -35,9 +35,9 @@ public class GriddlePlugin implements Plugin<Project> {
     public static String GROUP;
 
     /**
-     * The library directory we found from gradle.properties. The default is "Libraries".
+     * The library directory we found from gradle.properties. The default is ":Libraries".
      */
-    public static String LIBRARY_DIRECTORY = "Libraries";
+    public static String LIBRARY_DIRECTORY = ":Libraries";
 
     /**
      * The library extension we found from gradle.properties. The default is left empty.

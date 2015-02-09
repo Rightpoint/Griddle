@@ -71,7 +71,7 @@ public class ModuleContainer extends BaseContainer {
      * @return
      */
     private static String getFullyQualifiedName(String module) {
-        ":${GriddlePlugin.LIBRARY_DIRECTORY}:${module}"
+        "${GriddlePlugin.LIBRARY_DIRECTORY}:${module}"
     }
 
     private static String getFullyQualifiedArtifactName(String groupId, String name, String version) {

@@ -146,6 +146,12 @@ public class ModuleContainer extends BaseContainer {
      */
     private void modResolve(String compileMode, boolean addSource, String module) {
         String[] moduleNotationParts = module.split(':')
+
+        // is a special case
+        if(moduleNotationParts.length > 1 && hasBrackets(moduleNotationParts[1])) {
+            
+        }
+
         if (moduleNotationParts.length > 2) {
             String version = moduleNotationParts[2]
 

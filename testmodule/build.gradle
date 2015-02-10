@@ -20,5 +20,13 @@ version = '1.0'
 
 
 dependencies {
-    mod "com.raizlabs.android:{Parser-Core, local: ${request_project_prefix}Parser}:1.2.0"
+    mod "com.raizlabs.android:{{Parser-Core, local: ${request_project_prefix}Parser}}:1.2.0"
+    mod "com.raizlabs.android:{{remote: Parser-FastJsonParser, local: ${request_project_prefix}Parser-FastJsonParser}}:1.2.0"
+
+    mod "com.google.android.gms:{play-services-maps}:6.5.87"
+    mod "com.google.android.gms:{play-services-location}:6.5.87"
+
+    mod "org.apache.karaf:karaf:3.0.3"
+
+    jar "org.apache.karaf.http.command-3.0.3"
 }

@@ -3,6 +3,7 @@ package com.raizlabs
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
@@ -83,7 +84,7 @@ public class ModuleContainer extends BaseContainer {
     }
 
     protected static String[] getParts(String string) {
-        string.replace('{', '').replace('}', '').split(',')
+        string.replace('{','').replace('}','').split(',')
     }
 
     /**
@@ -147,24 +148,63 @@ public class ModuleContainer extends BaseContainer {
     private void modResolve(String compileMode, boolean addSource, String module) {
         String[] moduleNotationParts = module.split(':')
 
-        // is a special case
-        if(moduleNotationParts.length > 1 && hasBrackets(moduleNotationParts[1])) {
-            
+        // is a special case of brackets
+        Pattern notationPatter = Pattern.compile(".+:\\{.*\\}:.*")
+        if(notationPatter.matcher(module).find()) {
+            moduleNotationParts = new String[3];
+
+            int firstColon = module.indexOf(":")
+
+            // first piece is the group id
+            moduleNotationParts[0] = module.substring(0, firstColon)
+
+            String remainder = module.substring(firstColon+1);
+
+            int secondColon = remainder.indexOf(":")
+            if(remainder.startsWith("{")) {
+                secondColon = remainder.lastIndexOf("}")+1
+            }
+
+            moduleNotationParts[1] = remainder.substring(0, secondColon)
+
+            moduleNotationParts[2] = remainder.substring(secondColon+1)
+
+            printLog "Changed parts to: ${moduleNotationParts}"
         }
 
         if (moduleNotationParts.length > 2) {
-            String version = moduleNotationParts[2]
+            String version = moduleNotationParts[2].trim()
+            String modName = moduleNotationParts[1].trim()
+
+            printLog "Modname: ${modName} version ${version}"
 
             // version checker. If we have a version specified in correct place, its an artifact
             Pattern pattern = Pattern.compile("[0-9]+(.[0-9]+)+")
             if (pattern.matcher(version).find()) {
 
                 // This is a split library declaration
-                if (hasBrackets(moduleNotationParts[1])) {
-                    String[] modules = getParts(moduleNotationParts[1])
+                if (hasBrackets(modName)) {
+
+                    String[] modules
+                    if(modName.startsWith('{')) {
+                        Pattern bracket = Pattern.compile("\\{.*\\}")
+
+                        String nobrackets = modName.startsWith("{{") ? modName.substring(1, modName.length()-1) : modName
+                        Matcher matcher = bracket.matcher(nobrackets)
+                        List<String> matches = new ArrayList<>()
+                        while (matcher.find()) {
+                            matches.add(matcher.group())
+                        }
+                        modules = matches.toArray(new String[matches.size()])
+                    } else {
+                        modules = getParts(modName)
+                    }
+
+                    printLog "Modules ${modules}"
+
                     String[] versions = null;
-                    if (hasBrackets(moduleNotationParts[2])) {
-                        versions = getParts(moduleNotationParts[2])
+                    if (hasBrackets(version)) {
+                        versions = getParts(version)
                         if (modules.length != versions.length) {
                             throw new IllegalStateException("Module parts and version parts for ${module}" +
                                     " must be the same length if version is specified.")
@@ -174,13 +214,14 @@ public class ModuleContainer extends BaseContainer {
                         String modPart = modules[i].trim()
                         String localName = modPart
                         String remoteName = modPart
+                        printLog "modPart: ${modPart}"
                         if (hasBrackets(modPart)) {
                             String[] names = getParts(modPart)
-                            if (names.length != 2) {
-                                throw new IllegalStateException("A module part that has nested brackets must specify remote and local names")
-                            } else {
+                            if (names.length == 2) {
                                 remoteName = names[0].trim().replace("remote: ", "")
                                 localName = names[1].trim().replace("local: ","")
+                            } else {
+                                remoteName = localName = modPart.replace('{','').replace('}','')
                             }
                         }
                         methodMod compileMode, addSource, localName, getFullyQualifiedArtifactName(moduleNotationParts[0].trim(), remoteName,

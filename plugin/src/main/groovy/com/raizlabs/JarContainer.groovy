@@ -1,7 +1,6 @@
 package com.raizlabs;
 
-import org.gradle.api.Project;
-import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.Project
 
 /**
  * Description:

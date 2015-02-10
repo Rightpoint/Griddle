@@ -1,0 +1,21 @@
+buildscript {
+    repositories {
+        maven{
+            url 'plugin'
+        }
+    }
+    dependencies {
+        classpath project(":plugin")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.raizlabs.griddle'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+
+dependencies {
+    mod "com.raizlabs.android:{{DBFlow, ${dbflow_project_prefix}DBFlow}, DBFlow-Core}:1.4.5"
+}

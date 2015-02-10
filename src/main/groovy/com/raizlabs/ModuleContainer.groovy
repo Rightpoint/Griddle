@@ -150,7 +150,7 @@ public class ModuleContainer extends BaseContainer {
             String version = moduleNotationParts[2]
 
             // version checker. If we have a version specified in correct place, its an artifact
-            Pattern pattern = Pattern.compile("[0-9][0-9]?\\.[0-9][0-9]?\\.[0-9][0-9]*")
+            Pattern pattern = Pattern.compile("[0-9]+(.[0-9]+)+")
             if (pattern.matcher(version).find()) {
 
                 // This is a split library declaration

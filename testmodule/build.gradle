@@ -1,0 +1,33 @@
+buildscript {
+    repositories {
+        maven{
+            url 'plugin'
+        }
+    }
+    dependencies {
+        classpath project(":plugin")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.raizlabs.griddle'
+
+mainClassName = 'com.raizlabs.griddle.Main'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+
+dependencies {
+    mod "com.raizlabs.android:{{Parser-Core, ${request_project_prefix}Parser}}:1.2.0"
+    mod "com.raizlabs.android:{{Parser-FastJsonParser, ${request_project_prefix}Parser-FastJsonParser}}:1.2.0"
+
+    mod "com.google.android.gms:{play-services-maps,play-services-location}:{6.5.87,6.5.87}"
+
+    mod "org.apache.karaf:karaf:3.0.3"
+
+    mod "${request_project_prefix}Parser"
+
+    jar "org.apache.karaf.http.command-3.0.3"
+}

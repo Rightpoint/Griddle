@@ -1,28 +1,13 @@
-buildscript {
+
+allprojects {
+    buildscript {
+        repositories {
+            jcenter()
+        }
+    }
+
     repositories {
-        mavenCentral()
+        jcenter()
+        maven { url "https://raw.github.com/Raizlabs/maven-releases/master/releases" }
     }
 }
-
-repositories {
-    jcenter()
-}
-
-apply plugin: 'groovy'
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-
-apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/java-artifacts.gradle'
-apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/maven_push.gradle'
-
-version = VERSION_NAME
-group = GROUP
-
-dependencies {
-    compile gradleApi()
-}
-
-task generate {
-    dependsOn clean, jar, sourcesJar
-}
-

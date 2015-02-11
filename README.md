@@ -1,4 +1,4 @@
-[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-1.0.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-1.0.2-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 
 # Griddle
 
@@ -18,7 +18,7 @@ buildscript {
     }
     dependencies {
         ....
-        classpath 'com.raizlabs:griddle:1.0.0'
+        classpath 'com.raizlabs:griddle:1.0.2'
     }
 
 }
@@ -63,7 +63,7 @@ mod 'com.raizlabs.android:{DBFlow-Core, DBFlow}:1.4.2'
 
 mod 'Parser'
 
-mod 'com.raizlabs.android:{Parser, local: Parser:Parser}:1.2.0'
+mod 'com.raizlabs.android:{Parser, :Parser:Parser}:1.2.0'
 
 ```
 
@@ -77,13 +77,10 @@ You can specify different names for local vs. remote by specifying the following
 
 ```groovy
 
-mod 'artifactId:{{moduleName, local: localModuleName}}:version'
-
-mod 'artifactId:{{remote: moduleName, localModuleName}}:version'
-
-mod 'artifactId:{{remote: moduleName, local: localModuleName}}:version'
-
 mod 'artifactId:{{moduleName, localModuleName}}:version'
+
+mod 'artifactId:{{moduleName, localModuleName}, {anotherModuleName, anotherLocalName}}:version'
+
 
 ```
 
@@ -127,7 +124,7 @@ dependencies {
    1. Place ```{}``` around the ```artifactName``` and add more similar artifacts separated by commas. If you place one or more of the comma-separated items in ```{}```, you can specify remote vs local such like:
    
 ```groovy
-mod 'com.raizlabs.android:{BaseUtils, {WebServiceManager, local: WebServiceManager:WebServiceManager}}:1.0.0'
+mod 'com.raizlabs.android:{BaseUtils, {WebServiceManager, :WebServiceManager:WebServiceManager}}:1.0.0'
 ```
 
    2. If (1) is used, you can place ```{}``` around the ```artifactVersion``` and specify a per-dependency version. **Note** the length of comma-separated ```artifactNames``` must match the versions specified.

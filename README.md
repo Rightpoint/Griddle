@@ -18,7 +18,7 @@ buildscript {
     }
     dependencies {
         ....
-        classpath 'com.raizlabs:griddle:1.0.2'
+        classpath 'com.raizlabs:Griddle:1.0.2'
     }
 
 }

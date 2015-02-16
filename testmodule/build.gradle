@@ -27,7 +27,5 @@ dependencies {
 
     mod "org.apache.karaf:karaf:3.0.3"
 
-    mod "${request_project_prefix}Parser"
-
     jar "org.apache.karaf.http.command-3.0.3"
 }

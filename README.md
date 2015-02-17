@@ -1,4 +1,4 @@
-[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-1.0.2-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-1.0.3-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 
 # Griddle
 
@@ -18,7 +18,7 @@ buildscript {
     }
     dependencies {
         ....
-        classpath 'com.raizlabs:Griddle:1.0.2'
+        classpath 'com.raizlabs:Griddle:1.0.3'
     }
 
 }
